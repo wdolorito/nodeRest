@@ -1,4 +1,5 @@
 require('dotenv').config()
+const port = process.env.PORT || 5000
 const restify = require('restify')
 const server = restify.createServer()
 
@@ -11,12 +12,14 @@ function respond(req, res, next) {
   next()
 }
 
+server.use(restify.plugins.bodyParser())
+
 server.pre(restify.plugins.pre.userAgentConnection())
 server.pre(restify.plugins.pre.dedupeSlashes())
 
-server.get('/hello/:name', respond)
-server.head('/hello/:name', respond)
+require('./routes/posts')(server)
+require('./routes/users')(server)
 
-server.listen(8080, function() {
-  console.log('%s listening at %s', server.name, server.url)
+server.listen(port, function() {
+  console.log('Listening on port: %s', port)
 })

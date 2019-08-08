@@ -5,13 +5,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon"
+    "dev": "nodemon server.js"
   },
   "author": "William Dolorito",
   "license": "UNLICENSED",
   "dependencies": {
     "dotenv": "^8.0.0",
-    "restify": "^8.4.0"
+    "restify": "^8.4.0",
+    "restify-errors": "^8.0.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
