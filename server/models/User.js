@@ -48,7 +48,7 @@ const UserSchema = new mongoose.Schema({
     }
 })
 
-PostSchema.plugin(timestamp)
+UserSchema.plugin(timestamp)
 
-const Post = mongoose.model('Post', PostSchema)
-module.exports = Post
+const User = mongoose.model('User', UserSchema)
+module.exports = User
