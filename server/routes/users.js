@@ -60,15 +60,21 @@ module.exports = server => {
     }
   })
 
-  // server.put('/user/:id', async (req, res, next) => { // 200 req
-  //   try {
-  //     res.send(new errors.InvalidArgumentError('update a user'))
-  //     next()
-  //   } catch(err) {
-  //     return next(new errors.InvalidArgumentError(err)) // || MissingParameterError()
-  //   }
-  // })
-  //
+  server.put('/user/:id', async (req, res, next) => { // 200 req
+    if(!req.is('application/json')) {
+      return next(new errors.InvalidContentError('Data not sent correctly'))
+    }
+
+    try {
+      const user = await User.findById(req.params.id)
+      await User.updateOne({ _id: user._id}, { $set: req.body })
+      res.send(200)
+      next()
+    } catch(err) {
+      return next(new errors.ResourceNotFoundError('No user with id: ' + req.params.id))
+    }
+  })
+
   // server.del('/user/:id', async (req, res, next) => { // 204 req
   //   try {
   //     res.send(new errors.GoneError('delete a user'))
