@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const timestamp = require('mongoose-timestamp')
 
-console.log(__dirname)
-
 const PostSchema = new mongoose.Schema({
     authorId: {
       type: String,
