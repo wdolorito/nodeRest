@@ -75,12 +75,14 @@ module.exports = server => {
     }
   })
 
-  // server.del('/user/:id', async (req, res, next) => { // 204 req
-  //   try {
-  //     res.send(new errors.GoneError('delete a user'))
-  //     next()
-  //   } catch(err) {
-  //     return next(new errors.GoneError(err))
-  //   }
-  // })
+  server.del('/user/:id', async (req, res, next) => { // 204 req
+    try {
+      const user = await User.findById(req.params.id)
+      await User.deleteOne({ _id: user._id})
+      res.send(204)
+      next()
+    } catch(err) {
+      return next(new errors.ResourceNotFoundError('No user with id: ' + req.params.id))
+    }
+  })
 }
