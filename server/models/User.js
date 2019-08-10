@@ -29,6 +29,7 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
       type: String,
+      select: false,
       required: true
     },
     location: {
@@ -47,12 +48,6 @@ const UserSchema = new mongoose.Schema({
       trim: true
     }
 })
-
-UserSchema.methods.toJSON = function() {
- var obj = this.toObject();
- delete obj.password;
- return obj;
-}
 
 UserSchema.plugin(timestamp)
 
