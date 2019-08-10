@@ -1,5 +1,8 @@
+const bcrypt = require('bcryptjs')
 const errors = require('restify-errors')
+const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+const bauth = require('../bauth')
 
 module.exports = server => {
   //CRUD operations => post get put del
@@ -30,13 +33,31 @@ module.exports = server => {
       avatar
     })
 
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, async (err, hash) => {
+        user.password = hash;
+
+        try {
+          const newUser = await user.save()
+          res.send(201)
+          next()
+        } catch(err) {
+          return next(new errors.InternalError(err.message))
+        }
+      })
+    })
+  })
+
+  server.post('/login', async (req, res, next) => {
+    const { email, password } = req.body
+
     try {
-      const newUser = await user.save()
-      res.send(201)
-      next()
+       const user = await bauth.bauth(email, password)
+       const token = jwt.sign(user.toJSON(), process.env.APP_SECRET, { expiresIn: '30m' })
+       const { iat, exp } = jwt.decode(token)
+       res.send({ iat, exp, token })
     } catch(err) {
-      console.log(err)
-      return next(new errors.InternalError(err.message))
+      return next(new errors.UnauthorizedError(err))
     }
   })
 
