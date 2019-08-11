@@ -2,6 +2,11 @@ const mongoose = require('mongoose')
 const timestamp = require('mongoose-timestamp')
 
 const UserSchema = new mongoose.Schema({
+    isAdmin: {
+      type: Boolean,
+      default: false,
+      select: false
+    },
     userName: {
       type: String,
       required: true,
