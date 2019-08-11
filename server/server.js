@@ -2,9 +2,14 @@ require('dotenv').config()
 const port = process.env.PORT || 5000
 const restify = require('restify')
 const mongoose = require('mongoose')
+const rjwt = require('restify-jwt-community')
+
 const server = restify.createServer()
 
 server.use(restify.plugins.bodyParser())
+
+const protected = [ '/login', '/posts', '/register' ]
+server.use(rjwt({ secret: process.env.APP_SECRET }).unless({ path: protected }));
 
 server.pre(restify.plugins.pre.userAgentConnection())
 server.pre(restify.plugins.pre.dedupeSlashes())

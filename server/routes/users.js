@@ -6,7 +6,7 @@ const bauth = require('../bauth')
 
 module.exports = server => {
   //CRUD operations => post get put del
-  server.post('/user', async (req, res, next) => {
+  server.post('/register', async (req, res, next) => {
     if(!req.is('application/json')) {
       return next(new errors.InvalidContentError('Data not sent correctly'))
     }
@@ -67,7 +67,7 @@ module.exports = server => {
       res.send(users)
       next()
     } catch(err) {
-      return next(new errors.InvalidContentError(err))
+      return next(new errors.InvalidContentError(err.message))
     }
   })
 
