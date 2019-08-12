@@ -2,9 +2,10 @@ const mongoose = require('mongoose')
 const timestamp = require('mongoose-timestamp')
 
 const PostSchema = new mongoose.Schema({
-    authorId: {
+    owner: {
       type: String,
       required: true,
+      select: false,
       trim: true
     },
     title: {

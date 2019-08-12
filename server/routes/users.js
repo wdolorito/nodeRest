@@ -63,6 +63,7 @@ module.exports = server => {
 
   server.get('/users', async (req, res, next) => {
     try {
+      console.log(req.headers.authorization)
       const users = await User.find()
       res.send(users)
       next()
