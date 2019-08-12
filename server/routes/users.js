@@ -2,16 +2,20 @@ const bcrypt = require('bcryptjs')
 const errors = require('restify-errors')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+const UserData = require('../models/UserData')
 const bauth = require('../bauth')
 
 module.exports = server => {
+  User.init()
+  UserData.init()
+
   //CRUD operations => post get put del
   server.post('/register', async (req, res, next) => {
     if(!req.is('application/json')) {
       return next(new errors.InvalidContentError('Data not sent correctly'))
     }
 
-    const { userName,
+    const { handle,
             firstName,
             middleName,
             lastName,
@@ -22,27 +26,38 @@ module.exports = server => {
             avatar } = req.body
 
     const user = new User({
-      userName,
-      firstName,
-      middleName,
-      lastName,
       email,
-      password,
-      location,
-      bio,
-      avatar
+      password
     })
 
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(user.password, salt, async (err, hash) => {
         user.password = hash;
 
+        var newUser, userData
+
         try {
-          const newUser = await user.save()
+          newUser = await user.save()
+        } catch(err) {
+          return next(new errors.InternalError('db error'))
+        }
+
+        try {
+          userData = new UserData({
+            owner: newUser._id,
+            handle,
+            firstName,
+            middleName,
+            lastName,
+            location,
+            bio,
+            avatar
+          })
+          const newUserData = await userData.save()
           res.send(201)
           next()
         } catch(err) {
-          return next(new errors.InternalError(err.message))
+          return next(new errors.InternalError('db error'))
         }
       })
     })
@@ -63,7 +78,10 @@ module.exports = server => {
 
   server.get('/users', async (req, res, next) => {
     try {
-      console.log(req.headers.authorization)
+      const sentToken = req.headers.authorization
+      const pToken = sentToken.split(' ')
+      console.log(jwt.verify(pToken[1], process.env.APP_SECRET))
+
       const users = await User.find()
       res.send(users)
       next()

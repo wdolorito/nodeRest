@@ -15,7 +15,10 @@ server.pre(restify.plugins.pre.userAgentConnection())
 server.pre(restify.plugins.pre.dedupeSlashes())
 
 server.listen(port, () => {
-  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+  mongoose.connect(process.env.MONGODB_URI, {
+    useCreateIndex: true,
+    useNewUrlParser: true
+  })
 })
 
 const db = mongoose.connection

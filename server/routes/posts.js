@@ -4,6 +4,7 @@ const Post = require('../models/Post')
 // authorId, title, body
 
 module.exports = server => {
+  Post.init()
   // CRUD operations -> post get put del
   server.post('/post', async (req, res, next) => {
     if(!req.is('application/json')) {
