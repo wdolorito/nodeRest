@@ -15,6 +15,7 @@ server.pre(restify.plugins.pre.userAgentConnection())
 server.pre(restify.plugins.pre.dedupeSlashes())
 
 server.listen(port, () => {
+  mongoose.pluralize(null)
   mongoose.connect(process.env.MONGODB_URI, {
     useCreateIndex: true,
     useNewUrlParser: true

@@ -28,7 +28,6 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema.plugin(timestamp)
-UserSchema.set('collection', 'user')
 
 const User = mongoose.model('User', UserSchema)
 module.exports = User

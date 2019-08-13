@@ -1,13 +1,14 @@
 const bcrypt = require('bcryptjs')
 const errors = require('restify-errors')
 const jwt = require('jsonwebtoken')
+const Blacklist = require('../models/Blacklist')
 const User = require('../models/User')
 const UserData = require('../models/UserData')
 const bauth = require('../bauth')
 
 module.exports = server => {
+  Blacklist.init()
   User.init()
-  UserData.init()
 
   //CRUD operations => post get put del
   server.post('/register', async (req, res, next) => {
@@ -64,22 +65,39 @@ module.exports = server => {
   })
 
   server.post('/login', async (req, res, next) => {
+    if(!req.is('application/json')) {
+      return next(new errors.InvalidContentError('Data not sent correctly'))
+    }
+
     const { email, password } = req.body
 
     try {
-       const user = await bauth.bauth(email, password)
-       const token = jwt.sign(user.toJSON(), process.env.APP_SECRET, { expiresIn: '30m' })
-       const { iat, exp } = jwt.decode(token)
-       res.send({ iat, exp, token })
+      const user = await bauth.bauth(email, password)
+      const token = jwt.sign(user.toJSON(), process.env.APP_SECRET, { expiresIn: '30m' })
+      const { iat, exp } = jwt.decode(token)
+      res.send({ iat, exp, token })
     } catch(err) {
       return next(new errors.UnauthorizedError(err))
     }
   })
 
+  server.post('/logout', async (req, res, next) => {
+    try {
+      const resToken = req.headers.authorization
+      const pToken = resToken.split(' ')[1]
+      const newBlacklist = new Blacklist({ token: pToken })
+      const blacklist = await newBlacklist.save()
+      console.log(pToken)
+      res.send(200)
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+  })
+
   server.get('/users', async (req, res, next) => {
     try {
-      const sentToken = req.headers.authorization
-      const pToken = sentToken.split(' ')
+      const resToken = req.headers.authorization
+      const pToken = resToken.split(' ')
       console.log(jwt.verify(pToken[1], process.env.APP_SECRET))
 
       const users = await User.find()

@@ -11,17 +11,18 @@ const PostSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    unique: true,
     trim: true
   },
   body: {
     type: String,
     required: true,
+    unique: true,
     trim: true
   }
 })
 
 PostSchema.plugin(timestamp)
-PostSchema.set('collection', 'post')
 
 const Post = mongoose.model('Post', PostSchema)
 module.exports = Post

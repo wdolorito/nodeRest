@@ -5,16 +5,21 @@ const Post = require('../models/Post')
 
 module.exports = server => {
   Post.init()
+
   // CRUD operations -> post get put del
   server.post('/post', async (req, res, next) => {
     if(!req.is('application/json')) {
       return next(new errors.InvalidContentError('Data not sent correctly'))
     }
 
-    const { authorId, title, body } = req.body
+    const { title, body } = req.body
+
+    const sentToken = req.headers.authorization
+    const pToken = sentToken.split(' ')
+    const decode = jwt.verify(pToken[1], process.env.APP_SECRET)
 
     const post = new Post({
-      authorId,
+      owner: _id,
       title,
       body
     })
@@ -25,7 +30,7 @@ module.exports = server => {
       next()
     } catch(err) {
       console.log(err)
-      return next(new errors.InternalError(err.message))
+      return next(new errors.InternalError('db error'))
     }
   })
 
