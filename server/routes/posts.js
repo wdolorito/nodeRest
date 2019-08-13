@@ -1,6 +1,8 @@
 const errors = require('restify-errors')
 const jwt = require('jsonwebtoken')
 const Post = require('../models/Post')
+const User = require('../models/User')
+const bauth = require('../utility/bauth')
 const utils = require('../utility/jwtutils')
 
 // owner, title, body
@@ -39,6 +41,11 @@ module.exports = server => {
     const sentToken = req.headers.authorization
     const decoded = await utils.getID(sentToken)
     console.log(decoded)
+    const isMaster = await bauth.isMaster(decoded)
+    console.log(isMaster)
+    const isAdmin = await bauth.isAdmin(decoded)
+    console.log(isAdmin)
+
     try {
       const posts = await Post.find()
       res.send(posts)

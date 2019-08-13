@@ -18,3 +18,25 @@ exports.bauth = (email, password) => {
     }
   })
 }
+
+exports.isAdmin = (id) => {
+  return new Promise(async (res, rej) => {
+    try {
+      const user = await User.findOne({ _id: id }).select('isAdmin')
+      res(user.isAdmin)
+    } catch(err) {
+      rej('db error')
+    }
+  })
+}
+
+exports.isMaster = (id) => {
+  return new Promise(async (res, rej) => {
+    try {
+      const user = await User.findOne({ _id: id }).select('isMaster')
+      res(user.isMaster)
+    } catch(err) {
+      rej('db error')
+    }
+  })
+}
