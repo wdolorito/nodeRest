@@ -1,7 +1,9 @@
 const errors = require('restify-errors')
+const jwt = require('jsonwebtoken')
 const Post = require('../models/Post')
+const utils = require('../utility/jwtutils')
 
-// authorId, title, body
+// owner, title, body
 
 module.exports = server => {
   Post.init()
@@ -15,11 +17,10 @@ module.exports = server => {
     const { title, body } = req.body
 
     const sentToken = req.headers.authorization
-    const pToken = sentToken.split(' ')
-    const decode = jwt.verify(pToken[1], process.env.APP_SECRET)
+    const decode = util.getId(sentToken)
 
     const post = new Post({
-      owner: _id,
+      owner: decode._id,
       title,
       body
     })
@@ -35,6 +36,29 @@ module.exports = server => {
   })
 
   server.get('/posts', async (req, res, next) => {
+    const sentToken = req.headers.authorization
+    const decoded = await utils.getID(sentToken)
+    console.log(decoded)
+    try {
+      const posts = await Post.find()
+      res.send(posts)
+      next()
+    } catch(err) {
+      return next(new errors.InvalidContentError(err))
+    }
+  })
+
+  server.get('/posts/byUser', async (req, res, next) => {
+    try {
+      const posts = await Post.find()
+      res.send(posts)
+      next()
+    } catch(err) {
+      return next(new errors.InvalidContentError(err))
+    }
+  })
+
+  server.get('/posts/byUser/:id', async (req, res, next) => {
     try {
       const posts = await Post.find()
       res.send(posts)

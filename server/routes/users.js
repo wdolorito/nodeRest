@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken')
 const Blacklist = require('../models/Blacklist')
 const User = require('../models/User')
 const UserData = require('../models/UserData')
-const bauth = require('../bauth')
+const bauth = require('../utility/bauth')
+const utils = require('../utility/jwtutils')
 
 module.exports = server => {
   Blacklist.init()
