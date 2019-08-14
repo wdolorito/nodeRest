@@ -41,12 +41,41 @@ exports.isMaster = (id) => {
   })
 }
 
-exports.canDelete = (sid, did) => {
+exports.canAction = (sid, did, act, type) => {
+  // sid = id from header
+  // did = id sent in body
+  // act = action, delete or update
+  // type = type, user or post
+
   return new Promise(async (res, rej) => {
-    const smaster = await exports.isMaster(sid)
-    const sadmin = await exports.isAdmin(sid)
-    const dmaster = await exports.isMaster(sid)
-    const dadmin = await exports.isAdmin(sid)
-    res('true')
+    switch(act) {
+      case 'delete':
+        break
+      case 'update':
+        break
+      default:
+        rej('db error')
+    }
+
+    }
+    if(sid == did) res(true)
+
+    try {
+      const smaster = await exports.isMaster(sid)
+
+      if(smaster) res(false)
+
+      const sadmin = await exports.isAdmin(sid)
+      const suser = !(smaster || sasmin)
+
+      const dmaster = await exports.isMaster(sid)
+
+      if(dmaster) res(false)
+
+      const dadmin = await exports.isAdmin(sid)
+      const duser = !(dmaster || dadmin)
+    } catch(err) {
+      rej('db error')
+    }
   })
 }
