@@ -40,3 +40,13 @@ exports.isMaster = (id) => {
     }
   })
 }
+
+exports.canDelete = (sid, did) => {
+  return new Promise(async (res, rej) => {
+    const smaster = await exports.isMaster(sid)
+    const sadmin = await exports.isAdmin(sid)
+    const dmaster = await exports.isMaster(sid)
+    const dadmin = await exports.isAdmin(sid)
+    res('true')
+  })
+}
