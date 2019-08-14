@@ -36,7 +36,7 @@ module.exports = server => {
       bcrypt.hash(user.password, salt, async (err, hash) => {
         user.password = hash;
 
-        var newUser, userData
+        let newUser, userData
 
         try {
           newUser = await user.save()
