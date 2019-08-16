@@ -48,34 +48,63 @@ exports.canAction = (sid, did, act, type) => {
   // type = type, user or post
 
   return new Promise(async (res, rej) => {
+    let sent, towork, isSame = (sid === did)
+    try {
+      sent = await whoAmI(sid)
+      towork = await whoAmI(did)
+    } catch(err) {
+      rej('db error')
+    }
+
     switch(act) {
       case 'delete':
+        res(canDelete(sent, towork, type, isSame))
         break
       case 'update':
+        res(canUpdate(sent, towork, type, isSame))
         break
       default:
         rej('db error')
     }
 
-    }
-    if(sid == did) res(true)
+  })
+}
 
+function whoAmI(id) {
+  return new Promise(async (res, rej) => {
     try {
-      const smaster = await exports.isMaster(sid)
-
-      if(smaster) res(false)
-
-      const sadmin = await exports.isAdmin(sid)
-      const suser = !(smaster || sasmin)
-
-      const dmaster = await exports.isMaster(sid)
-
-      if(dmaster) res(false)
-
-      const dadmin = await exports.isAdmin(sid)
-      const duser = !(dmaster || dadmin)
+      let admin = await exports.isAdmin(id)
+      if(admin) res('admin')
+      if(!admin) {
+        if(await exports.isMaster(id)) res('master')
+      }
+      res('user')
     } catch(err) {
       rej('db error')
     }
   })
+}
+
+function canDelete(sent, todel, type, isSame) {
+  switch(type) {
+    case 'user':
+      if(sent === 'master' & sent !== todel) return true
+      if(sent === 'admin')
+      break
+    case 'post':
+      break
+    default:
+      return false
+  }
+}
+
+function canUpdate(sent, toup, type, isSame) {
+  switch(type) {
+    case 'user':
+      break
+    case 'post':
+      break
+    default:
+      return false
+  }
 }
