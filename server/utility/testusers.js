@@ -157,10 +157,26 @@ function canDelete(sent, todel, type, isSame) {
   switch(type) {
     case 'user':
       if(sent === 'master' & !isSame) return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master') {
+          if(isSame) return true
+          if(todel !== 'admin') return true
+        }
+      }
+
       return false
       break
     case 'post':
       if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master') {
+          if(isSame) return true
+          if(todel !== 'admin') return true
+        }
+      }
+
       return false
       break
     default:
@@ -188,19 +204,33 @@ async function doChecks(id) {
   user1id = await whoAmI(user1)
   user2id = await whoAmI(user2)
 
-  console.log('delete user: master + master:', canDelete(masterid, masterid, 'user', true))
-  console.log('delete user: master + admin1', canDelete(masterid, admin1id, 'user', false))
-  console.log('delete user: master + admin2', canDelete(masterid, admin2id, 'user', false))
-  console.log('delete user: master + user1', canDelete(masterid, user1id, 'user', false))
-  console.log('delete user: master + user2', canDelete(masterid, user2id, 'user', false))
+  // console.log('delete user: master + master:', canDelete(masterid, masterid, 'user', true))
+  // console.log('delete user: master + admin1', canDelete(masterid, admin1id, 'user', false))
+  // console.log('delete user: master + admin2', canDelete(masterid, admin2id, 'user', false))
+  // console.log('delete user: master + user1', canDelete(masterid, user1id, 'user', false))
+  // console.log('delete user: master + user2', canDelete(masterid, user2id, 'user', false))
+  //
+  // console.log()
+  //
+  // console.log('delete post: master + master', canDelete(masterid, masterid, 'post', true))
+  // console.log('delete post: master + admin1', canDelete(masterid, admin1id, 'post', false))
+  // console.log('delete post: master + admin2', canDelete(masterid, admin2id, 'post', false))
+  // console.log('delete post: master + user1', canDelete(masterid, user1id, 'post', false))
+  // console.log('delete post: master + user2', canDelete(masterid, user2id, 'post', false))
+
+  console.log('delete user: admin1 + master:', canDelete(admin1id, masterid, 'user', false))
+  console.log('delete user: admin1 + admin1', canDelete(admin1id, admin1id, 'user', true))
+  console.log('delete user: admin1 + admin2', canDelete(admin1id, admin2id, 'user', false))
+  console.log('delete user: admin1 + user1', canDelete(admin1id, user1id, 'user', false))
+  console.log('delete user: admin1 + user2', canDelete(admin1id, user2id, 'user', false))
 
   console.log()
 
-  console.log('delete post: master + master', canDelete(masterid, masterid, 'post', true))
-  console.log('delete post: master + admin1', canDelete(masterid, admin1id, 'post', false))
-  console.log('delete post: master + admin2', canDelete(masterid, admin2id, 'post', false))
-  console.log('delete post: master + user1', canDelete(masterid, user1id, 'post', false))
-  console.log('delete post: master + user2', canDelete(masterid, user2id, 'post', false))
+  console.log('delete post: admin1 + master', canDelete(admin1id, masterid, 'post', false))
+  console.log('delete post: admin1 + admin1', canDelete(admin1id, admin1id, 'post', true))
+  console.log('delete post: admin1 + admin2', canDelete(admin1id, admin2id, 'post', false))
+  console.log('delete post: admin1 + user1', canDelete(admin1id, user1id, 'post', false))
+  console.log('delete post: admin1 + user2', canDelete(admin1id, user2id, 'post', false))
 }
 
 doChecks()
