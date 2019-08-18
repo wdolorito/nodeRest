@@ -6,12 +6,14 @@ const UserDataSchema = new mongoose.Schema({
     type: String,
     select: false,
     required: true,
-    trim: true
+    trim: true,
+    immutable: true
   },
   handle: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    immutable: true
   },
   firstName: {
     type: String,

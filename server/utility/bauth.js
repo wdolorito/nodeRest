@@ -74,9 +74,9 @@ function whoAmI(id) {
   return new Promise(async (res, rej) => {
     try {
       let admin = await exports.isAdmin(id)
-      if(admin) res('admin')
-      if(!admin) {
-        if(await exports.isMaster(id)) res('master')
+      if(admin == 'true') res('admin')
+      if(admin == 'false') {
+        if(await exports.isMaster(id) == 'true') res('master')
       }
       res('user')
     } catch(err) {
@@ -88,8 +88,9 @@ function whoAmI(id) {
 function canDelete(sent, todel, type, isSame) {
   switch(type) {
     case 'user':
-      if(sent === 'master' & sent !== todel) return true
-      if(sent === 'admin')
+      if(sent === 'master' & !isSame) return true
+      if(sent === 'admin' & isSame) return true
+      if(sent === 'user' & isSame) return true
       break
     case 'post':
       break

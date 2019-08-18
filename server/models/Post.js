@@ -6,7 +6,8 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: true,
     select: false,
-    trim: true
+    trim: true,
+    immutable: true    
   },
   title: {
     type: String,
