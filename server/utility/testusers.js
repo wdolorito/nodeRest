@@ -218,19 +218,33 @@ async function doChecks(id) {
   // console.log('delete post: master + user1', canDelete(masterid, user1id, 'post', false))
   // console.log('delete post: master + user2', canDelete(masterid, user2id, 'post', false))
 
-  console.log('delete user: admin1 + master:', canDelete(admin1id, masterid, 'user', false))
-  console.log('delete user: admin1 + admin1', canDelete(admin1id, admin1id, 'user', true))
-  console.log('delete user: admin1 + admin2', canDelete(admin1id, admin2id, 'user', false))
-  console.log('delete user: admin1 + user1', canDelete(admin1id, user1id, 'user', false))
-  console.log('delete user: admin1 + user2', canDelete(admin1id, user2id, 'user', false))
+  // console.log('delete user: admin1 + master:', canDelete(admin1id, masterid, 'user', false))
+  // console.log('delete user: admin1 + admin1', canDelete(admin1id, admin1id, 'user', true))
+  // console.log('delete user: admin1 + admin2', canDelete(admin1id, admin2id, 'user', false))
+  // console.log('delete user: admin1 + user1', canDelete(admin1id, user1id, 'user', false))
+  // console.log('delete user: admin1 + user2', canDelete(admin1id, user2id, 'user', false))
+  //
+  // console.log()
+  //
+  // console.log('delete post: admin1 + master', canDelete(admin1id, masterid, 'post', false))
+  // console.log('delete post: admin1 + admin1', canDelete(admin1id, admin1id, 'post', true))
+  // console.log('delete post: admin1 + admin2', canDelete(admin1id, admin2id, 'post', false))
+  // console.log('delete post: admin1 + user1', canDelete(admin1id, user1id, 'post', false))
+  // console.log('delete post: admin1 + user2', canDelete(admin1id, user2id, 'post', false))
+
+  console.log('delete user: admin2 + master:', canDelete(admin2id, masterid, 'user', false))
+  console.log('delete user: admin2 + admin1', canDelete(admin2id, admin1id, 'user', false))
+  console.log('delete user: admin2 + admin2', canDelete(admin2id, admin2id, 'user', true))
+  console.log('delete user: admin2 + user1', canDelete(admin2id, user1id, 'user', false))
+  console.log('delete user: admin2 + user2', canDelete(admin2id, user2id, 'user', false))
 
   console.log()
 
-  console.log('delete post: admin1 + master', canDelete(admin1id, masterid, 'post', false))
-  console.log('delete post: admin1 + admin1', canDelete(admin1id, admin1id, 'post', true))
-  console.log('delete post: admin1 + admin2', canDelete(admin1id, admin2id, 'post', false))
-  console.log('delete post: admin1 + user1', canDelete(admin1id, user1id, 'post', false))
-  console.log('delete post: admin1 + user2', canDelete(admin1id, user2id, 'post', false))
+  console.log('delete post: admin2 + master', canDelete(admin2id, masterid, 'post', false))
+  console.log('delete post: admin2 + admin1', canDelete(admin2id, admin1id, 'post', false))
+  console.log('delete post: admin2 + admin2', canDelete(admin2id, admin2id, 'post', true))
+  console.log('delete post: admin2 + user1', canDelete(admin2id, user1id, 'post', false))
+  console.log('delete post: admin2 + user2', canDelete(admin2id, user2id, 'post', false))
 }
 
 doChecks()
