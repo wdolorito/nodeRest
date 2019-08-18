@@ -188,15 +188,26 @@ function canDelete(sent, todel, type, isSame) {
   }
 }
 
-function canUpdate(sent, passed, type, isSame) {
+function canUpdate(sent, todel, type, isSame) {
   switch(type) {
     case 'user':
       if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master') {
+          if(isSame) return true
+          if(todel !== 'admin') return true
+        }
+      }
 
       return false
       break
     case 'post':
       if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master')  return true
+      }
 
       return false
       break
@@ -284,19 +295,33 @@ async function doChecks(id) {
   // console.log('delete post: user2 + user1', canDelete(user2id, user1id, 'post', false))
   // console.log('delete post: user2 + user2', canDelete(user2id, user2id, 'post', true))
 
-  console.log('update user: master + master:', canUpdate(masterid, masterid, 'user', true))
-  console.log('update user: master + admin1', canUpdate(masterid, admin1id, 'user', false))
-  console.log('update user: master + admin2', canUpdate(masterid, admin2id, 'user', false))
-  console.log('update user: master + user1', canUpdate(masterid, user1id, 'user', false))
-  console.log('update user: master + user2', canUpdate(masterid, user2id, 'user', false))
+  // console.log('update user: master + master:', canUpdate(masterid, masterid, 'user', true))
+  // console.log('update user: master + admin1', canUpdate(masterid, admin1id, 'user', false))
+  // console.log('update user: master + admin2', canUpdate(masterid, admin2id, 'user', false))
+  // console.log('update user: master + user1', canUpdate(masterid, user1id, 'user', false))
+  // console.log('update user: master + user2', canUpdate(masterid, user2id, 'user', false))
+  //
+  // console.log()
+  //
+  // console.log('update post: master + master', canUpdate(masterid, masterid, 'post', true))
+  // console.log('update post: master + admin1', canUpdate(masterid, admin1id, 'post', false))
+  // console.log('update post: master + admin2', canUpdate(masterid, admin2id, 'post', false))
+  // console.log('update post: master + user1', canUpdate(masterid, user1id, 'post', false))
+  // console.log('update post: master + user2', canUpdate(masterid, user2id, 'post', false))
+
+  console.log('update user: admin1 + master:', canUpdate(admin1id, masterid, 'user', false))
+  console.log('update user: admin1 + admin1', canUpdate(admin1id, admin1id, 'user', true))
+  console.log('update user: admin1 + admin2', canUpdate(admin1id, admin2id, 'user', false))
+  console.log('update user: admin1 + user1', canUpdate(admin1id, user1id, 'user', false))
+  console.log('update user: admin1 + user2', canUpdate(admin1id, user2id, 'user', false))
 
   console.log()
 
-  console.log('update post: master + master', canUpdate(masterid, masterid, 'post', true))
-  console.log('update post: master + admin1', canUpdate(masterid, admin1id, 'post', false))
-  console.log('update post: master + admin2', canUpdate(masterid, admin2id, 'post', false))
-  console.log('update post: master + user1', canUpdate(masterid, user1id, 'post', false))
-  console.log('update post: master + user2', canUpdate(masterid, user2id, 'post', false))
+  console.log('update post: admin1 + master', canUpdate(admin1id, masterid, 'post', false))
+  console.log('update post: admin1 + admin1', canUpdate(admin1id, admin1id, 'post', true))
+  console.log('update post: admin1 + admin2', canUpdate(admin1id, admin2id, 'post', false))
+  console.log('update post: admin1 + user1', canUpdate(admin1id, user1id, 'post', false))
+  console.log('update post: admin1 + user2', canUpdate(admin1id, user2id, 'post', false))
 }
 
 doChecks()
