@@ -89,10 +89,31 @@ function canDelete(sent, todel, type, isSame) {
   switch(type) {
     case 'user':
       if(sent === 'master' & !isSame) return true
-      if(sent === 'admin' & isSame) return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master') {
+          if(isSame) return true
+          if(todel !== 'admin') return true
+        }
+      }
+
       if(sent === 'user' & isSame) return true
+
+      return false
       break
     case 'post':
+      if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master') {
+          if(isSame) return true
+          if(todel !== 'admin') return true
+        }
+      }
+
+      if(sent === 'user' & isSame) return true
+
+      return false
       break
     default:
       return false
@@ -102,8 +123,29 @@ function canDelete(sent, todel, type, isSame) {
 function canUpdate(sent, toup, type, isSame) {
   switch(type) {
     case 'user':
+      if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(toup !== 'master') {
+          if(isSame) return true
+          if(toup !== 'admin') return true
+        }
+      }
+
+      if(sent === 'user' & isSame) return true
+
+      return false
       break
     case 'post':
+      if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(toup !== 'master')  return true
+      }
+
+      if(sent === 'user' & isSame) return true
+
+      return false
       break
     default:
       return false
