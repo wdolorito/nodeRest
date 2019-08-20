@@ -10,7 +10,6 @@ let master,
     user2data
 
 master = `{
-  "_id": "0add1949-69ee-490b-b5bc-a999a1209862",
   "isMaster": "true",
   "isAdmin": "false",
   "email": "master@ex.com",
@@ -18,7 +17,6 @@ master = `{
 }`
 
 masterdata = `{
-  "owner": "0add1949-69ee-490b-b5bc-a999a1209862",
   "handle": "TheBoss",
   "firstName": "The",
   "middleName": "Head",
@@ -29,7 +27,6 @@ masterdata = `{
 }`
 
 admin1 = `{
-  "_id": "a19620a8-3cfd-4f9f-8568-75fbf93eddc3",
   "isMaster": "false",
   "isAdmin": "true",
   "email": "admin1@ex.com",
@@ -37,7 +34,6 @@ admin1 = `{
 }`
 
 admin1data = `{
-  "owner": "a19620a8-3cfd-4f9f-8568-75fbf93eddc3",
   "handle": "Underling1",
   "firstName": "Some",
   "middleName": "Guys",
@@ -48,7 +44,6 @@ admin1data = `{
 }`
 
 admin2 = `{
-  "_id": "079e495a-972e-498e-81db-fb4d781f31bb",
   "isMaster": "false",
   "isAdmin": "true",
   "email": "admin2@ex.com",
@@ -56,7 +51,6 @@ admin2 = `{
 }`
 
 admin2data = `{
-  "owner": "079e495a-972e-498e-81db-fb4d781f31bb",
   "handle": "Underling2",
   "firstName": "Guys",
   "middleName": "Other",
@@ -67,7 +61,6 @@ admin2data = `{
 }`
 
 user1 = `{
-  "_id": "89f06b8d-1296-47c7-98a5-495aee87b351",
   "isMaster": "false",
   "isAdmin": "false",
   "email": "user1@ex.com",
@@ -75,7 +68,6 @@ user1 = `{
 }`
 
 user1data = `{
-  "owner": "89f06b8d-1296-47c7-98a5-495aee87b351",
   "handle": "CoolUser",
   "firstName": "Best",
   "middleName": "Nerd",
@@ -86,7 +78,6 @@ user1data = `{
 }`
 
 user2 = `{
-  "_id": "0efa9e8c-24cc-44d2-84da-ffaaced7ef00",
   "isMaster": "false",
   "isAdmin": "false",
   "email": "user2@ex.com",
@@ -94,7 +85,6 @@ user2 = `{
 }`
 
 user2data = `{
-  "owner": "0efa9e8c-24cc-44d2-84da-ffaaced7ef00",
   "handle": "StrongUser",
   "firstName": "Eye",
   "middleName": "Lift",
