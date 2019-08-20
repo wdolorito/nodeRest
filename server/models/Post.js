@@ -7,7 +7,7 @@ const PostSchema = new mongoose.Schema({
     required: true,
     select: false,
     trim: true,
-    immutable: true    
+    immutable: true
   },
   title: {
     type: String,
@@ -25,5 +25,5 @@ const PostSchema = new mongoose.Schema({
 
 PostSchema.plugin(timestamp)
 
-const Post = mongoose.model('Post', PostSchema)
+const Post = mongoose.model('Post', PostSchema, 'Post')
 module.exports = Post

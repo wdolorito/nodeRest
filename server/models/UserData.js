@@ -49,5 +49,5 @@ const UserDataSchema = new mongoose.Schema({
 
 UserDataSchema.plugin(timestamp)
 
-const UserData = mongoose.model('UserData', UserDataSchema)
+const UserData = mongoose.model('UserData', UserDataSchema, 'UserData')
 module.exports = UserData
