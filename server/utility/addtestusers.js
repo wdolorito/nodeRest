@@ -3,9 +3,9 @@ const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 const User = require('../models/User')
 const UserData = require('../models/UserData')
-const impusers = require('./testusers')
+const impusers = require('./seedusers')
 
-async function saveUser(user, userdata) {
+function saveUser(user, userdata) {
   return new Promise( (res, rej) => {
     const { handle,
             firstName,
@@ -65,14 +65,21 @@ mongoose.connect(process.env.MONGODB_URI, {
 })
 
 async function doAdd() {
-  let master = await saveUser(impusers.users.master, impusers.users.masterdata)
-  let admin1 = await saveUser(impusers.users.admin1, impusers.users.admin1data)
-  let admin2 = await saveUser(impusers.users.admin2, impusers.users.admin2data)
-  let user1 = await saveUser(impusers.users.user1, impusers.users.user1data)
-  let user2 = await saveUser(impusers.users.user2, impusers.users.user2data)
-  if(user2) process.exit()
+  try {
+    await saveUser(impusers.users.master, impusers.users.masterdata)
+    await saveUser(impusers.users.admin1, impusers.users.admin1data)
+    await saveUser(impusers.users.admin2, impusers.users.admin2data)
+    await saveUser(impusers.users.user1, impusers.users.user1data)
+    if(await saveUser(impusers.users.user2, impusers.users.user2data)) process.exit()
+  } catch(err) {
+    console.log('something happened')
+  }
 }
 
 mongoose.connection.once('open', async () => {
-  await doAdd()
+  try {
+    await doAdd()
+  } catch(err) {
+    console.log('something happened')
+  }
 })
