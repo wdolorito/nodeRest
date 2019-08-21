@@ -11,7 +11,7 @@ let master,
 
 master = `{
   "isMaster": "true",
-  "isAdmin": "false",
+  "isAdmin": "true",
   "email": "master@ex.com",
   "password": "imtheboss"
 }`

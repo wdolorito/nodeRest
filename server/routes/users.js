@@ -98,13 +98,33 @@ module.exports = server => {
   server.get('/users', async (req, res, next) => {
     try {
       const resToken = req.headers.authorization
-      const pToken = resToken.split(' ')
-      console.log(jwt.verify(pToken[1], process.env.APP_SECRET))
+      const pToken = resToken.split(' ')[1]
+      const decoded = jwt.verify(pToken, process.env.APP_SECRET)
 
-      const users = await User.find()
-      res.send(users)
+      let tuser
+      try {
+        tuser = await bauth.whoAmI(decoded._id)
+      } catch(err) {
+        console.log(err)
+      }
+
+      console.log(tuser)
+
+      let users
+      switch(tuser) {
+        case 'user':
+          users = await User.find().where('isMaster').ne(true).where('isAdmin').ne(true)
+          break
+        case 'admin':
+          users = await User.find().where('isMaster').ne(true)
+          break
+        default:
+          users = await User.find()
+        }
+        res.send(users)
       next()
     } catch(err) {
+      console.log(err)
       return next(new errors.InvalidContentError(err.message))
     }
   })

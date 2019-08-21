@@ -15,5 +15,5 @@ const BlacklistSchema = new mongoose.Schema({
 BlacklistSchema.plugin(timestamp)
 BlacklistSchema.index({ createdAt: 1 }, { expireAfterSeconds: expireTime })
 
-const Blacklist = mongoose.model('Blacklist', BlacklistSchema)
+const Blacklist = mongoose.model('Blacklist', BlacklistSchema, 'Blacklist')
 module.exports = Blacklist

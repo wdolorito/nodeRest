@@ -21,6 +21,7 @@ exports.bauth = (email, password) => {
 
 exports.isAdmin = (id) => {
   return new Promise(async (res, rej) => {
+    console.log(id)
     try {
       const user = await User.findOne({ _id: id }).select('isAdmin')
       res(user.isAdmin)
@@ -70,13 +71,19 @@ exports.canAction = (sid, did, act, type) => {
   })
 }
 
-function whoAmI(id) {
+exports.whoAmI = (id) => {
   return new Promise(async (res, rej) => {
+    let admin
     try {
-      let admin = await exports.isAdmin(id)
-      if(admin == 'true') res('admin')
-      if(admin == 'false') {
-        if(await exports.isMaster(id) == 'true') res('master')
+      admin = await exports.isAdmin(id)
+    } catch(err) {
+      rej('db error')
+    }
+
+    try {
+      if(admin == true) {
+        if(await exports.isMaster(id) == true) res('master')
+        res('admin')
       }
       res('user')
     } catch(err) {
