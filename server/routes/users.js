@@ -88,7 +88,6 @@ module.exports = server => {
       const pToken = resToken.split(' ')[1]
       const newBlacklist = new Blacklist({ token: pToken })
       const blacklist = await newBlacklist.save()
-      console.log(pToken)
       res.send(200)
     } catch(err) {
       return next(new errors.InternalError('db error'))
@@ -96,19 +95,24 @@ module.exports = server => {
   })
 
   server.get('/users', async (req, res, next) => {
+    const resToken = req.headers.authorization
     try {
-      const resToken = req.headers.authorization
-      const pToken = resToken.split(' ')[1]
-      const decoded = jwt.verify(pToken, process.env.APP_SECRET)
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.UnauthorizedError('Not authorized'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
+    try {
+      const decoded = await utils.getID(resToken)
 
       let tuser
       try {
-        tuser = await bauth.whoAmI(decoded._id)
+        tuser = await bauth.whoAmI(decoded)
       } catch(err) {
-        console.log(err)
+        return next(new errors.InternalServerError(err.message))
       }
-
-      console.log(tuser)
 
       let users
       switch(tuser) {
@@ -124,12 +128,20 @@ module.exports = server => {
         res.send(users)
       next()
     } catch(err) {
-      console.log(err)
       return next(new errors.InvalidContentError(err.message))
     }
   })
 
   server.get('/users/:id', async (req, res, next) => {
+    const resToken = req.headers.authorization
+    try {
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.UnauthorizedError('Not authorized'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
     try {
       const user = await User.findById(req.params.id)
       res.send(user)
@@ -140,8 +152,13 @@ module.exports = server => {
   })
 
   server.put('/user/:id', async (req, res, next) => { // 200 req
-    if(!req.is('application/json')) {
-      return next(new errors.InvalidContentError('Data not sent correctly'))
+    const resToken = req.headers.authorization
+    try {
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.UnauthorizedError('Not authorized'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
     }
 
     try {
@@ -155,6 +172,15 @@ module.exports = server => {
   })
 
   server.del('/user/:id', async (req, res, next) => { // 204 req
+    const resToken = req.headers.authorization
+    try {
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.UnauthorizedError('Not authorized'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
     try {
       const user = await User.findById(req.params.id)
       await User.deleteOne({ _id: user._id})
