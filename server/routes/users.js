@@ -7,6 +7,35 @@ const UserData = require('../models/UserData')
 const bauth = require('../utility/bauth')
 const utils = require('../utility/jwtutils')
 
+function getUser(id) {
+  return new Promise(async (res, rej) => {
+    try {
+      const user = await User.findById(id).select('-__v')
+      const userdata = await UserData.findOne({ owner: user._id }).select('-_id -__v')
+      const payload = []
+      payload.push(user)
+      if(userdata != null) payload.push(userdata)
+      res(payload)
+    } catch(err) {
+      rej(err)
+    }
+  })
+}
+
+function getUsers(arr) {
+  return new Promise(async (res, rej) => {
+    try {
+      let payload = []
+      for(let count = 0; count < arr.length; count++) {
+        payload.push(await getUser(arr[count]._id))
+      }
+      res(payload)
+    } catch(err) {
+      rej(err)
+    }
+  })
+}
+
 module.exports = server => {
   Blacklist.init()
   User.init()
@@ -117,22 +146,23 @@ module.exports = server => {
       let users
       switch(tuser) {
         case 'user':
-          users = await User.find().where('isMaster').ne(true).where('isAdmin').ne(true)
+          users = await User.find().where('isMaster').ne(true).where('isAdmin').ne(true).select('-__v')
           break
         case 'admin':
-          users = await User.find().where('isMaster').ne(true)
+          users = await User.find().where('isMaster').ne(true).select('-__v')
           break
         default:
-          users = await User.find()
-        }
-        res.send(users)
+          users = await User.find().select('-__v')
+      }
+
+      res.send(await getUsers(users))
       next()
     } catch(err) {
       return next(new errors.InvalidContentError(err.message))
     }
   })
 
-  server.get('/users/:id', async (req, res, next) => {
+  server.get('/user/:id', async (req, res, next) => {
     const resToken = req.headers.authorization
     try {
       if(await utils.isExpired(resToken)) {
@@ -143,8 +173,7 @@ module.exports = server => {
     }
 
     try {
-      const user = await User.findById(req.params.id)
-      res.send(user)
+      res.send(await getUser(req.params.id))
       next()
     } catch(err) {
       return next(new errors.ResourceNotFoundError('No user with id: ' + req.params.id))
