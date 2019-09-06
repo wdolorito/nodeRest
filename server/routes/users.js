@@ -127,7 +127,7 @@ module.exports = server => {
     const resToken = req.headers.authorization
     try {
       if(await utils.isExpired(resToken)) {
-        return next(new errors.UnauthorizedError('Not authorized'))
+        return next(new errors.InvalidCredentialsError('No authorization token was found'))
       }
     } catch(err) {
       return next(new errors.InternalError('db error'))
