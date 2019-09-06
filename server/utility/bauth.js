@@ -2,6 +2,95 @@ const bcrypt = require('bcryptjs')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 
+const canDelete = (sent, todel, type, isSame) => {
+  switch(type) {
+    case 'user':
+      if(sent === 'master' & !isSame) return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master') {
+          if(isSame) return true
+          if(todel !== 'admin') return true
+        }
+      }
+
+      if(sent === 'user' & isSame) return true
+
+      return false
+      break
+    case 'post':
+      if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(todel !== 'master') {
+          if(isSame) return true
+          if(todel !== 'admin') return true
+        }
+      }
+
+      if(sent === 'user' & isSame) return true
+
+      return false
+      break
+    default:
+      return false
+  }
+}
+
+const canUpdate = (sent, toup, type, isSame) => {
+  switch(type) {
+    case 'user':
+      if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(toup !== 'master') {
+          if(isSame) return true
+          if(toup !== 'admin') return true
+        }
+      }
+
+      if(sent === 'user' & isSame) return true
+
+      return false
+      break
+    case 'post':
+      if(sent === 'master') return true
+
+      if(sent === 'admin') {
+        if(toup !== 'master')  return true
+      }
+
+      if(sent === 'user' & isSame) return true
+
+      return false
+      break
+    default:
+      return false
+  }
+}
+
+const isAdmin = (id) => {
+  return new Promise(async (res, rej) => {
+    try {
+      const user = await User.findOne({ _id: id }).select('isAdmin')
+      res(user.isAdmin)
+    } catch(err) {
+      rej('db error')
+    }
+  })
+}
+
+const isMaster = (id) => {
+  return new Promise(async (res, rej) => {
+    try {
+      const user = await User.findOne({ _id: id }).select('isMaster')
+      res(user.isMaster)
+    } catch(err) {
+      rej('db error')
+    }
+  })
+}
+
 exports.bauth = (email, password) => {
   return new Promise(async (res, rej) => {
     try {
@@ -15,28 +104,6 @@ exports.bauth = (email, password) => {
       })
     } catch(err) {
       rej('Authentication error')
-    }
-  })
-}
-
-exports.isAdmin = (id) => {
-  return new Promise(async (res, rej) => {
-    try {
-      const user = await User.findOne({ _id: id }).select('isAdmin')
-      res(user.isAdmin)
-    } catch(err) {
-      rej('db error')
-    }
-  })
-}
-
-exports.isMaster = (id) => {
-  return new Promise(async (res, rej) => {
-    try {
-      const user = await User.findOne({ _id: id }).select('isMaster')
-      res(user.isMaster)
-    } catch(err) {
-      rej('db error')
     }
   })
 }
@@ -89,71 +156,4 @@ exports.whoAmI = (id) => {
       rej('db error')
     }
   })
-}
-
-function canDelete(sent, todel, type, isSame) {
-  switch(type) {
-    case 'user':
-      if(sent === 'master' & !isSame) return true
-
-      if(sent === 'admin') {
-        if(todel !== 'master') {
-          if(isSame) return true
-          if(todel !== 'admin') return true
-        }
-      }
-
-      if(sent === 'user' & isSame) return true
-
-      return false
-      break
-    case 'post':
-      if(sent === 'master') return true
-
-      if(sent === 'admin') {
-        if(todel !== 'master') {
-          if(isSame) return true
-          if(todel !== 'admin') return true
-        }
-      }
-
-      if(sent === 'user' & isSame) return true
-
-      return false
-      break
-    default:
-      return false
-  }
-}
-
-function canUpdate(sent, toup, type, isSame) {
-  switch(type) {
-    case 'user':
-      if(sent === 'master') return true
-
-      if(sent === 'admin') {
-        if(toup !== 'master') {
-          if(isSame) return true
-          if(toup !== 'admin') return true
-        }
-      }
-
-      if(sent === 'user' & isSame) return true
-
-      return false
-      break
-    case 'post':
-      if(sent === 'master') return true
-
-      if(sent === 'admin') {
-        if(toup !== 'master')  return true
-      }
-
-      if(sent === 'user' & isSame) return true
-
-      return false
-      break
-    default:
-      return false
-  }
 }

@@ -7,7 +7,7 @@ const UserData = require('../models/UserData')
 const bauth = require('../utility/bauth')
 const utils = require('../utility/jwtutils')
 
-function getUser(id) {
+const getUser = (id) => {
   return new Promise(async (res, rej) => {
     try {
       const user = await User.findById(id).select('-__v')
@@ -22,7 +22,7 @@ function getUser(id) {
   })
 }
 
-function getUsers(arr) {
+const getUsers = (arr) => {
   return new Promise(async (res, rej) => {
     try {
       let payload = []

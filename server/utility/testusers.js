@@ -121,7 +121,7 @@ user1data = JSON.parse(user1data)
 user2 = JSON.parse(user2)
 user2data = JSON.parse(user2data)
 
-function isAdmin(pass) {
+const isAdmin = (pass) => {
   return new Promise(async (res, rej) => {
     try {
       const user = pass.isAdmin
@@ -132,7 +132,7 @@ function isAdmin(pass) {
   })
 }
 
-function isMaster(pass) {
+const isMaster = (pass) => {
   return new Promise(async (res, rej) => {
     try {
       const user = pass.isMaster
@@ -143,7 +143,7 @@ function isMaster(pass) {
   })
 }
 
-async function whoAmI(user) {
+const whoAmI = async (user) => {
   return new Promise(async (res, rej) => {
     try {
       const admin = await isAdmin(user)
@@ -158,7 +158,7 @@ async function whoAmI(user) {
   })
 }
 
-function canDelete(sent, todel, type, isSame) {
+const canDelete = (sent, todel, type, isSame) => {
   switch(type) {
     case 'user':
       if(sent === 'master' & !isSame) return true
@@ -193,7 +193,7 @@ function canDelete(sent, todel, type, isSame) {
   }
 }
 
-function canUpdate(sent, todel, type, isSame) {
+const canUpdate = (sent, todel, type, isSame) => {
   switch(type) {
     case 'user':
       if(sent === 'master') return true
@@ -225,8 +225,7 @@ function canUpdate(sent, todel, type, isSame) {
   }
 }
 
-
-async function doChecks(id) {
+const doCheck = async (id) => {
   let masterid, admin1id, admin2id, user1id, user2id
   masterid = await whoAmI(master)
   admin1id = await whoAmI(admin1)
@@ -359,7 +358,7 @@ async function doChecks(id) {
   // console.log('update post: user1 + admin2', canUpdate(user1id, admin2id, 'post', false))
   // console.log('update post: user1 + user1', canUpdate(user1id, user1id, 'post', true))
   // console.log('update post: user1 + user2', canUpdate(user1id, user2id, 'post', false))
-
+  //
   // console.log('update user: user2 + master:', canUpdate(user2id, masterid, 'user', false))
   // console.log('update user: user2 + admin1', canUpdate(user2id, admin1id, 'user', false))
   // console.log('update user: user2 + admin2', canUpdate(user2id, admin2id, 'user', false))
@@ -373,9 +372,9 @@ async function doChecks(id) {
   // console.log('update post: user2 + admin2', canUpdate(user2id, admin2id, 'post', false))
   // console.log('update post: user2 + user1', canUpdate(user2id, user1id, 'post', false))
   // console.log('update post: user2 + user2', canUpdate(user2id, user2id, 'post', true))
-  let truth = (masterid == masterid)
-  let lies = (masterid == admin1id)
-  console.log(truth, lies)
+  // let truth = (masterid == masterid)
+  // let lies = (masterid == admin1id)
+  // console.log(truth, lies)
 }
 
-// doChecks()
+doCheck()

@@ -5,7 +5,7 @@ const Post = require('../models/Post')
 const User = require('../models/User')
 const impposts = require('./seedposts')
 
-function savePost(post) {
+const savePost = (post) => {
   return new Promise(async (res, rej) => {
     let postowner
     try {
@@ -35,7 +35,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true
 })
 
-async function doAdd() {
+const doAdd() = async () => {
   try {
     await savePost(impposts.posts.user1testpost1)
     await savePost(impposts.posts.user1testpost2)

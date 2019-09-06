@@ -5,7 +5,7 @@ const User = require('../models/User')
 const UserData = require('../models/UserData')
 const impusers = require('./seedusers')
 
-function saveUser(user, userdata) {
+const saveUser = (user, userdata) => {
   return new Promise( (res, rej) => {
     const { handle,
             firstName,
@@ -64,7 +64,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true
 })
 
-async function doAdd() {
+const doAdd = async () => {
   try {
     await saveUser(impusers.users.master, impusers.users.masterdata)
     await saveUser(impusers.users.admin1, impusers.users.admin1data)
