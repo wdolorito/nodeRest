@@ -38,7 +38,7 @@ const UserDataSchema = new mongoose.Schema({
   bio: {
     type: String,
     required: false,
-    trim: false
+    trim: true
   },
   avatar: {
     type: String,

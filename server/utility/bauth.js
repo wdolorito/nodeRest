@@ -117,8 +117,8 @@ exports.canAction = (sid, did, act, type) => {
   return new Promise(async (res, rej) => {
     let sent, towork, isSame = (sid === did)
     try {
-      sent = await whoAmI(sid)
-      towork = await whoAmI(did)
+      sent = await exports.whoAmI(sid)
+      towork = await exports.whoAmI(did)
     } catch(err) {
       rej('db error')
     }
@@ -133,7 +133,6 @@ exports.canAction = (sid, did, act, type) => {
       default:
         rej('db error')
     }
-
   })
 }
 
@@ -141,14 +140,14 @@ exports.whoAmI = (id) => {
   return new Promise(async (res, rej) => {
     let admin
     try {
-      admin = await exports.isAdmin(id)
+      admin = await isAdmin(id)
     } catch(err) {
       rej('db error')
     }
 
     try {
       if(admin == true) {
-        if(await exports.isMaster(id) == true) res('master')
+        if(await isMaster(id) == true) res('master')
         res('admin')
       }
       res('user')

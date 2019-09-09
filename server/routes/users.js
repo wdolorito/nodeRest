@@ -36,6 +36,20 @@ const getUsers = (arr) => {
   })
 }
 
+const hashPass = (plain) => {
+  return new Promise((res, rej) => {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(plain, salt, (err, hash) => {
+        if(hash) {
+          res(hash)
+        } else {
+          rej('error')
+        }
+      })
+    })
+  })
+}
+
 module.exports = server => {
   Blacklist.init()
   User.init()
@@ -61,37 +75,36 @@ module.exports = server => {
       password
     })
 
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(user.password, salt, async (err, hash) => {
-        user.password = hash;
+    user.password = await hashPass(user.password)
 
-        let newUser, userData
+    let newUser, userData
 
-        try {
-          newUser = await user.save()
-        } catch(err) {
-          return next(new errors.InternalError('db error'))
-        }
+    try {
+      newUser = await user.save()
+    } catch(err) {
+      console.log(err)
+      return next(new errors.InternalError('db error'))
+    }
 
-        try {
-          userData = new UserData({
-            owner: newUser._id,
-            handle,
-            firstName,
-            middleName,
-            lastName,
-            location,
-            bio,
-            avatar
-          })
-          const newUserData = await userData.save()
-          res.send(201)
-          next()
-        } catch(err) {
-          return next(new errors.InternalError('db error'))
-        }
+    try {
+      userData = new UserData({
+        owner: newUser._id,
+        handle,
+        firstName,
+        middleName,
+        lastName,
+        location,
+        bio,
+        avatar
       })
-    })
+      const newUserData = await userData.save()
+      res.send(201)
+      next()
+    } catch(err) {
+      await User.deleteOne({ _id: user._id})
+      console.log(err)
+      return next(new errors.InternalError('db error'))
+    }
   })
 
   server.post('/login', async (req, res, next) => {
@@ -140,7 +153,7 @@ module.exports = server => {
       try {
         tuser = await bauth.whoAmI(decoded)
       } catch(err) {
-        return next(new errors.InternalServerError(err.message))
+        return next(new errors.InternalServerError(err))
       }
 
       let users
@@ -176,7 +189,7 @@ module.exports = server => {
       res.send(await getUser(req.params.id))
       next()
     } catch(err) {
-      return next(new errors.ResourceNotFoundError('No user with id: ' + req.params.id))
+      return next(new errors.ResourceNotFoundError('User does not exist'))
     }
   })
 
@@ -190,13 +203,40 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
+    let canaction
+    const user = req.params.id
+    const towork = await utils.getID(resToken)
+
     try {
-      const user = await User.findById(req.params.id)
-      await User.updateOne({ _id: user._id}, { $set: req.body })
-      res.send(200)
-      next()
+      canaction = await bauth.canAction(user, towork, 'update', 'user')
     } catch(err) {
-      return next(new errors.ResourceNotFoundError('No user with id: ' + req.params.id))
+      return next(new errors.InternalError(err))
+    }
+
+    let pass, email
+    if('password' in req.body) {
+      pass = req.body.password
+      delete req.body['password']
+    }
+
+    if('email' in req.body) {
+      email = req.body.email
+      delete req.body['email']
+    }
+
+    if(canaction && (Object.keys(req.body).length !== 0)) {
+      try {
+        pass = await hashPass(pass)
+        console.log(pass)
+        // await UserData.updateOne({ owner: user._id}, { $set: req.body })
+        res.send(200)
+        next()
+      } catch(err) {
+        // return next(new errors.ResourceNotFoundError('User does not exist'))
+        return next(new errors.ResourceNotFoundError(err))
+      }
+    } else {
+      return next(new errors.UnauthorizedError('Not authorized'))
     }
   })
 

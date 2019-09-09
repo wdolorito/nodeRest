@@ -35,7 +35,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true
 })
 
-const doAdd() = async () => {
+const doAdd = async () => {
   try {
     await savePost(impposts.posts.user1testpost1)
     await savePost(impposts.posts.user1testpost2)
