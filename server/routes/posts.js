@@ -38,16 +38,8 @@ module.exports = server => {
   })
 
   server.get('/posts', async (req, res, next) => {
-    const sentToken = req.headers.authorization
-    const decoded = await utils.getID(sentToken)
-    console.log(decoded)
-    const isMaster = await bauth.isMaster(decoded)
-    console.log(isMaster)
-    const isAdmin = await bauth.isAdmin(decoded)
-    console.log(isAdmin)
-
     try {
-      const posts = await Post.find()
+      const posts = await Post.find().select('-_id -__v')
       res.send(posts)
       next()
     } catch(err) {
@@ -56,8 +48,18 @@ module.exports = server => {
   })
 
   server.get('/posts/byUser', async (req, res, next) => {
+    const resToken = req.headers.authorization
     try {
-      const posts = await Post.find()
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.InvalidCredentialsError('No authorization token was found'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
+    try {
+      const user = await utils.getID(resToken)
+      const posts = await Post.find({ owner: user }).select('-_id -__v')
       res.send(posts)
       next()
     } catch(err) {

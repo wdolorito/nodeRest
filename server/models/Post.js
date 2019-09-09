@@ -5,7 +5,6 @@ const PostSchema = new mongoose.Schema({
   owner: {
     type: String,
     required: true,
-    select: false,
     trim: true,
     immutable: true
   },
