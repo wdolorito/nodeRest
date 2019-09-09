@@ -82,7 +82,6 @@ module.exports = server => {
     try {
       newUser = await user.save()
     } catch(err) {
-      console.log(err)
       return next(new errors.InternalError('db error'))
     }
 
@@ -102,7 +101,6 @@ module.exports = server => {
       next()
     } catch(err) {
       await User.deleteOne({ _id: user._id})
-      console.log(err)
       return next(new errors.InternalError('db error'))
     }
   })

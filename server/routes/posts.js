@@ -6,7 +6,42 @@ const UserData = require('../models/UserData')
 const bauth = require('../utility/bauth')
 const utils = require('../utility/jwtutils')
 
-// owner, title, body
+const getAuthor = (id) => {
+  return new Promise(async (res, rej) => {
+    try {
+      const authorid = await User.find({ _id: id }).select('-__v')
+      const authordata = await UserData.find({ owner: authorid[0]._id }).select('-_id -__v')
+      const author = {}
+      const name = authordata[0].firstName + ' '
+                   + authordata[0].middleName + ' '
+                   + authordata[0].lastName
+      author.author = name
+      author.handle = authordata[0].handle
+      res(author)
+    } catch(err) {
+      rej(err)
+    }
+  })
+}
+
+const fixPost = (toEdit) => {
+  return new Promise(async (res, rej) => {
+    try {
+      const author = await getAuthor(toEdit.owner)
+
+      const post = {}
+      post.author = author.author
+      post.handle = author.handle
+      post.title = toEdit.title
+      post.body = toEdit.body
+      post.updatedAt = toEdit.updatedAt
+      post.createdAt = toEdit.createdAt
+      res(post)
+    } catch(err) {
+      rej(err)
+    }
+  })
+}
 
 module.exports = server => {
   Post.init()
@@ -42,20 +77,7 @@ module.exports = server => {
       const tosend = []
       const posts = await Post.find().select('-_id -__v')
       for(count = 0; count < posts.length; count++) {
-        const authorid = await User.find({ _id: posts[count].owner }).select('-__v')
-        const authordata = await UserData.find({ owner: authorid[0]._id }).select('-_id -__v')
-
-        const post = {}
-        const author = authordata[0].firstName + ' '
-                     + authordata[0].middleName + ' '
-                     + authordata[0].lastName
-        post.author = author
-        post.handle = authordata[0].handle
-        post.title = posts[count].title
-        post.body = posts[count].body
-        post.updatedAt = posts[count].updatedAt
-        post.createdAt = posts[count].createdAt
-
+        const post = await fixPost(posts[count])
         tosend.push(post)
       }
 
@@ -77,9 +99,21 @@ module.exports = server => {
     }
 
     try {
+      const tosend = []
       const user = await utils.getID(resToken)
+      const author = await getAuthor(user)
       const posts = await Post.find({ owner: user }).select('-_id -__v')
-      res.send(posts)
+      for(count = 0; count < posts.length; count++) {
+        const post = {}
+        post.author = author.author
+        post.handle = author.handle
+        post.title = posts[count].title
+        post.body = posts[count].body
+        post.updatedAt = posts[count].updatedAt
+        post.createdAt = posts[count].createdAt
+        tosend.push(post)
+      }
+      res.send(tosend)
       next()
     } catch(err) {
       return next(new errors.InvalidContentError(err))
@@ -87,9 +121,31 @@ module.exports = server => {
   })
 
   server.get('/posts/byUser/:id', async (req, res, next) => {
+    const resToken = req.headers.authorization
     try {
-      const posts = await Post.find()
-      res.send(posts)
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.InvalidCredentialsError('No authorization token was found'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
+    try {
+      const tosend = []
+      const user = req.params.id
+      const author = await getAuthor(user)
+      const posts = await Post.find({ owner: user }).select('-_id -__v')
+      for(count = 0; count < posts.length; count++) {
+        const post = {}
+        post.author = author.author
+        post.handle = author.handle
+        post.title = posts[count].title
+        post.body = posts[count].body
+        post.updatedAt = posts[count].updatedAt
+        post.createdAt = posts[count].createdAt
+        tosend.push(post)
+      }
+      res.send(tosend)
       next()
     } catch(err) {
       return next(new errors.InvalidContentError(err))
