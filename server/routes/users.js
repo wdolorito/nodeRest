@@ -204,40 +204,53 @@ module.exports = server => {
     }
 
     let canaction
-    const user = req.params.id
-    const towork = await utils.getID(resToken)
+    const user = await utils.getID(resToken)
+    const towork = req.params.id
 
     try {
       canaction = await bauth.canAction(user, towork, 'update', 'user')
     } catch(err) {
-      return next(new errors.InternalError(err))
+      return next(new errors.InternalError('db error'))
     }
 
     let pass, email
     if('password' in req.body) {
-      pass = req.body.password
+      pass = await hashPass(req.body.password)
       delete req.body['password']
+
+      if(canaction) {
+        try {
+          await User.updateOne({ _id: towork }, { password: pass })
+        } catch(err) {
+          return next(new errors.InternalError('Unable to update'))
+        }
+      }
     }
 
     if('email' in req.body) {
       email = req.body.email
       delete req.body['email']
+
+      if(canaction) {
+        try {
+          await User.updateOne({ _id: towork }, { email: email })
+        } catch(err) {
+          return next(new errors.InternalError('Unable to update'))
+        }
+      }
     }
 
     if(canaction && (Object.keys(req.body).length !== 0)) {
       try {
-        pass = await hashPass(pass)
-        console.log(pass)
-        // await UserData.updateOne({ owner: user._id}, { $set: req.body })
+        await UserData.updateOne({ owner: towork }, { $set: req.body })
         res.send(200)
         next()
       } catch(err) {
-        // return next(new errors.ResourceNotFoundError('User does not exist'))
-        return next(new errors.ResourceNotFoundError(err))
+        return next(new errors.ResourceNotFoundError('User does not exist'))
       }
-    } else {
-      return next(new errors.UnauthorizedError('Not authorized'))
     }
+
+    return next(new errors.UnauthorizedError('Not authorized'))
   })
 
   server.del('/user/:id', async (req, res, next) => { // 204 req
@@ -250,13 +263,28 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
+    let canaction
+    const user = await utils.getID(resToken)
+    const towork = req.params.id
+
     try {
-      const user = await User.findById(req.params.id)
-      await User.deleteOne({ _id: user._id})
-      res.send(204)
-      next()
+      canaction = await bauth.canAction(user, towork, 'delete', 'user')
     } catch(err) {
-      return next(new errors.ResourceNotFoundError('No user with id: ' + req.params.id))
+      return next(new errors.InternalError('db error'))
     }
+
+    if(canaction) {
+      try {
+        const user = await User.findById(req.params.id)
+        await User.deleteOne({ _id: user._id})
+        await UserData.deleteOne({ owner: user._id})
+        res.send(204)
+        next()
+      } catch(err) {
+        return next(new errors.ResourceNotFoundError('User not found'))
+      }
+    }
+
+    return next(new errors.UnauthorizedError('Not authorized'))
   })
 }
