@@ -2,6 +2,7 @@ const errors = require('restify-errors')
 const jwt = require('jsonwebtoken')
 const Post = require('../models/Post')
 const User = require('../models/User')
+const UserData = require('../models/UserData')
 const bauth = require('../utility/bauth')
 const utils = require('../utility/jwtutils')
 
@@ -32,15 +33,33 @@ module.exports = server => {
       res.send(201)
       next()
     } catch(err) {
-      console.log(err)
       return next(new errors.InternalError('db error'))
     }
   })
 
   server.get('/posts', async (req, res, next) => {
     try {
+      const tosend = []
       const posts = await Post.find().select('-_id -__v')
-      res.send(posts)
+      for(count = 0; count < posts.length; count++) {
+        const authorid = await User.find({ _id: posts[count].owner }).select('-__v')
+        const authordata = await UserData.find({ owner: authorid[0]._id }).select('-_id -__v')
+
+        const post = {}
+        const author = authordata[0].firstName + ' '
+                     + authordata[0].middleName + ' '
+                     + authordata[0].lastName
+        post.author = author
+        post.handle = authordata[0].handle
+        post.title = posts[count].title
+        post.body = posts[count].body
+        post.updatedAt = posts[count].updatedAt
+        post.createdAt = posts[count].createdAt
+
+        tosend.push(post)
+      }
+
+      res.send(tosend)
       next()
     } catch(err) {
       return next(new errors.InvalidContentError(err))
