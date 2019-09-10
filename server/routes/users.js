@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const errors = require('restify-errors')
 const jwt = require('jsonwebtoken')
 const Blacklist = require('../models/Blacklist')
+const Post = require('../models/Post')
 const User = require('../models/User')
 const UserData = require('../models/UserData')
 const bauth = require('../utility/bauth')
@@ -75,18 +76,15 @@ module.exports = server => {
       password
     })
 
-    user.password = await hashPass(user.password)
-
-    let newUser, userData
-
     try {
-      newUser = await user.save()
+      user.password = await hashPass(user.password)
+      await user.save()
     } catch(err) {
       return next(new errors.InternalError('db error'))
     }
 
     try {
-      userData = new UserData({
+      const userData = new UserData({
         owner: newUser._id,
         handle,
         firstName,
@@ -96,7 +94,7 @@ module.exports = server => {
         bio,
         avatar
       })
-      const newUserData = await userData.save()
+      await userData.save()
       res.send(201)
       next()
     } catch(err) {
@@ -127,7 +125,7 @@ module.exports = server => {
       const resToken = req.headers.authorization
       const pToken = resToken.split(' ')[1]
       const newBlacklist = new Blacklist({ token: pToken })
-      const blacklist = await newBlacklist.save()
+      await newBlacklist.save()
       res.send(200)
     } catch(err) {
       return next(new errors.InternalError('db error'))
@@ -151,7 +149,7 @@ module.exports = server => {
       try {
         tuser = await bauth.whoAmI(decoded)
       } catch(err) {
-        return next(new errors.InternalServerError(err))
+        return next(new errors.InternalError('db error'))
       }
 
       let users
@@ -192,6 +190,10 @@ module.exports = server => {
   })
 
   server.put('/user/:id', async (req, res, next) => { // 200 req
+    if(!req.is('application/json')) {
+      return next(new errors.InvalidContentError('Data not sent correctly'))
+    }
+
     const resToken = req.headers.authorization
     try {
       if(await utils.isExpired(resToken)) {
@@ -202,10 +204,10 @@ module.exports = server => {
     }
 
     let canaction
-    const user = await utils.getID(resToken)
-    const towork = req.params.id
 
     try {
+      const user = await utils.getID(resToken)
+      const towork = req.params.id
       canaction = await bauth.canAction(user, towork, 'update', 'user')
     } catch(err) {
       return next(new errors.InternalError('db error'))
@@ -213,8 +215,12 @@ module.exports = server => {
 
     let pass, email
     if('password' in req.body) {
-      pass = await hashPass(req.body.password)
-      delete req.body['password']
+      try {
+        pass = await hashPass(req.body.password)
+        delete req.body['password']
+      } catch(err) {
+        return next(new errors.InternalError('db error'))
+      }
 
       if(canaction) {
         try {
@@ -262,10 +268,10 @@ module.exports = server => {
     }
 
     let canaction
-    const user = await utils.getID(resToken)
-    const towork = req.params.id
 
     try {
+      const user = await utils.getID(resToken)
+      const towork = req.params.id
       canaction = await bauth.canAction(user, towork, 'delete', 'user')
     } catch(err) {
       return next(new errors.InternalError('db error'))
@@ -273,9 +279,9 @@ module.exports = server => {
 
     if(canaction) {
       try {
-        const user = await User.findById(req.params.id)
-        await User.deleteOne({ _id: user._id})
-        await UserData.deleteOne({ owner: user._id})
+        await User.deleteOne({ _id: req.params.id })
+        await UserData.deleteOne({ owner: req.params.id })
+        await Post.deleteMany({ owner: req.params.id })
         res.send(204)
         next()
       } catch(err) {

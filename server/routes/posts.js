@@ -19,6 +19,7 @@ const getAuthor = (id) => {
       author.handle = authordata[0].handle
       res(author)
     } catch(err) {
+      console.log(err)
       rej(err)
     }
   })
@@ -30,6 +31,7 @@ const fixPost = (toEdit) => {
       const author = await getAuthor(toEdit.owner)
 
       const post = {}
+      post._id = toEdit._id
       post.author = author.author
       post.handle = author.handle
       post.title = toEdit.title
@@ -48,28 +50,46 @@ module.exports = server => {
 
   // CRUD operations -> post get put del
   server.post('/post', async (req, res, next) => {
+    const resToken = req.headers.authorization
+    try {
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.InvalidCredentialsError('No authorization token was found'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
     if(!req.is('application/json')) {
       return next(new errors.InvalidContentError('Data not sent correctly'))
     }
 
-    const { title, body } = req.body
-
-    const sentToken = req.headers.authorization
-    const decode = util.getId(sentToken)
-
-    const post = new Post({
-      owner: decode._id,
-      title,
-      body
-    })
+    let user, userType
 
     try {
-      const newPost = await post.save()
-      res.send(201)
-      next()
+      user = await utils.getID(resToken)
+      userType = await bauth.whoAmI(user)
     } catch(err) {
       return next(new errors.InternalError('db error'))
     }
+
+    if(userType === 'user') {
+      const { title, body } = req.body
+      const post = new Post({
+        owner: user,
+        title,
+        body
+      })
+
+      try {
+        const newPost = await post.save()
+        res.send(201)
+        next()
+      } catch(err) {
+        return next(new errors.InternalError('db error'))
+      }
+    }
+
+    return next(new errors.InternalError('unable to post'))
   })
 
   server.get('/posts', async (req, res, next) => {
@@ -84,6 +104,7 @@ module.exports = server => {
       res.send(tosend)
       next()
     } catch(err) {
+      console.log(err)
       return next(new errors.InvalidContentError(err))
     }
   })
@@ -102,9 +123,10 @@ module.exports = server => {
       const tosend = []
       const user = await utils.getID(resToken)
       const author = await getAuthor(user)
-      const posts = await Post.find({ owner: user }).select('-_id -__v')
+      const posts = await Post.find({ owner: user }).select('-__v')
       for(count = 0; count < posts.length; count++) {
         const post = {}
+        post._id = posts[count]._id
         post.author = author.author
         post.handle = author.handle
         post.title = posts[count].title
@@ -134,9 +156,10 @@ module.exports = server => {
       const tosend = []
       const user = req.params.id
       const author = await getAuthor(user)
-      const posts = await Post.find({ owner: user }).select('-_id -__v')
+      const posts = await Post.find({ owner: user }).select('-__v')
       for(count = 0; count < posts.length; count++) {
         const post = {}
+        post._id = posts[count]._id
         post.author = author.author
         post.handle = author.handle
         post.title = posts[count].title
@@ -152,13 +175,31 @@ module.exports = server => {
     }
   })
 
-  server.get('/posts/:id', async (req, res, next) => {
+  server.get('/post/:id', async (req, res, next) => {
+    const resToken = req.headers.authorization
     try {
-      const post = await Post.findById(req.params.id)
-      res.send(post)
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.InvalidCredentialsError('No authorization token was found'))
+      }
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
+    try {
+      const post = await Post.findOne({ _id: req.params.id }).select('-__v')
+      const author = await getAuthor(post.owner)
+      const tosend = {}
+      tosend._id = post._id
+      tosend.author = author.author
+      tosend.handle = author.handle
+      tosend.title = post.title
+      tosend.body = post.body
+      tosend.updatedAt = post.updatedAt
+      tosend.createdAt = post.createdAt
+      res.send(tosend)
       next()
     } catch(err) {
-      return next(new errors.ResourceNotFoundError('No post with id: ' + req.params.id))
+      return next(new errors.ResourceNotFoundError('Post not found'))
     }
   })
 
@@ -167,24 +208,66 @@ module.exports = server => {
       return next(new errors.InvalidContentError('Data not sent correctly'))
     }
 
+    const resToken = req.headers.authorization
     try {
-      const post = await Post.findById(req.params.id)
-      await Post.updateOne({ _id: post._id}, { $set: req.body })
-      res.send(200)
-      next()
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.InvalidCredentialsError('No authorization token was found'))
+      }
     } catch(err) {
-      return next(new errors.ResourceNotFoundError('No post with id: ' + req.params.id))
+      return next(new errors.InternalError('db error'))
+    }
+
+    let canaction
+
+    try {
+      const user = await utils.getID(resToken)
+      const post = await Post.findOne({ _id: req.params.id })
+      const towork = post.owner
+      canaction = await bauth.canAction(user, towork, 'update', 'post')
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
+    if(canaction) {
+      try {
+        await Post.updateOne({ _id: post._id}, { $set: req.body }).select('-__v')
+        res.send(200)
+        next()
+      } catch(err) {
+        return next(new errors.ResourceNotFoundError('Post not found'))
+      }
     }
   })
 
   server.del('/post/:id', async (req, res, next) => { // 204 req
+    const resToken = req.headers.authorization
     try {
-      const post = await Post.findById(req.params.id)
-      await Post.deleteOne({ _id: post._id})
-      res.send(204)
-      next()
+      if(await utils.isExpired(resToken)) {
+        return next(new errors.InvalidCredentialsError('No authorization token was found'))
+      }
     } catch(err) {
-      return next(new errors.ResourceNotFoundError('No post with id: ' + req.params.id))
+      return next(new errors.InternalError('db error'))
+    }
+
+    let canaction
+
+    try {
+      const user = await utils.getID(resToken)
+      const post = await Post.findOne({ _id: req.params.id })
+      const towork = post.owner
+      canaction = await bauth.canAction(user, towork, 'delete', 'post')
+    } catch(err) {
+      return next(new errors.InternalError('db error'))
+    }
+
+    if(canaction) {
+      try {
+        await Post.deleteOne({ _id: req.params.id})
+        res.send(204)
+        next()
+      } catch(err) {
+        return next(new errors.ResourceNotFoundError('Post not found'))
+      }
     }
   })
 }
