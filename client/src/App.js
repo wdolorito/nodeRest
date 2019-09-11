@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import Header from './components/layout/Header'
+import Footer from './components/layout/Footer'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React bitches
-        </a>
-      </header>
-    </div>
-  );
+import About from './components/pages/About'
+import EditPost from './components/pages/EditPost'
+import EditUser from './components/pages/EditUser'
+import Login from './components/pages/Login'
+import Logout from './components/pages/Logout'
+import MyPosts from './components/pages/MyPosts'
+import UserLookup from './components/pages/UserLookup'
+
+class App extends Component {
+  componentDidMount() {
+    console.log('page opened as a mofo')
+  }
+
+  render() {
+    return (
+      <Router>
+        <div className='App'>
+        <Header />
+          <div className='container'>
+          <Route path='/about' component={About} />
+          <Route path='/post/edit' component={EditPost} />
+          <Route path='/user/edit' component={EditUser} />
+          <Route path='/login' component={Login} />
+          <Route path='/logout' component={Logout} />
+          <Route path='/posts/user' component={MyPosts} />
+          <Route path='/users' component={UserLookup} />
+          </div>
+        <Footer />
+        </div>
+      </Router>
+    )
+  }
 }
 
 export default App;
