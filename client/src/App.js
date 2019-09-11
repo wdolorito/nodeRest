@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+import axios from 'axios'
+
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 
@@ -11,9 +13,16 @@ import Logout from './components/pages/Logout'
 import MyPosts from './components/pages/MyPosts'
 import UserLookup from './components/pages/UserLookup'
 
+import Posts from './components/Posts'
+
 class App extends Component {
+  state = {
+    posts: []
+  }
+
   componentDidMount() {
-    console.log('page opened as a mofo')
+    axios.get('http://192.168.15.20:3000/posts')
+     .then((res) => this.setState({ posts: res.data }))
   }
 
   render() {
@@ -22,6 +31,17 @@ class App extends Component {
         <div className='App'>
         <Header />
           <div className='container'>
+          <Route
+            exact
+            path='/'
+            render={(props) => (
+              <React.Fragment>
+                <Posts
+                  posts={this.state.posts}
+                />
+              </React.Fragment>
+            )}
+          />
           <Route path='/about' component={About} />
           <Route path='/post/edit' component={EditPost} />
           <Route path='/user/edit' component={EditUser} />

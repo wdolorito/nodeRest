@@ -9,7 +9,15 @@ const server = restify.createServer()
 server.use(restify.plugins.bodyParser())
 
 const unprotected = [ '/login', '/posts', '/register' ]
-server.use(rjwt({ secret: process.env.APP_SECRET }).unless({ path: unprotected }));
+server.use(rjwt({ secret: process.env.APP_SECRET }).unless({ path: unprotected }))
+
+server.use(
+  function crossOrigin(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+    return next()
+  }
+)
 
 server.pre(restify.plugins.pre.userAgentConnection())
 server.pre(restify.plugins.pre.dedupeSlashes())
