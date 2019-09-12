@@ -28,20 +28,12 @@ class App extends Component {
      .then((res) => this.setState({ posts: res.data }))
   }
 
-  componentDidUpdate() {
-    console.log(this.state.log, this.state.pass)
-  }
-
   setLog = (newlog) => {
-    console.log('called setlog')
     this.setState({ log: newlog })
-    console.log(this.state.log, this.state.pass)
   }
 
   setPass = (newpass) => {
-    console.log('called setpass')
     this.setState({ pass: newpass })
-    console.log(this.state.log, this.state.pass)
   }
 
   render() {
