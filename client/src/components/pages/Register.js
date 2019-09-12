@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 class Register extends Component {
   state = {
+    reglink: "http://192.168.15.20:3000/register",
     handle: "",
     firstName: "",
     middleName: "",
@@ -11,20 +13,8 @@ class Register extends Component {
     passcheck: "",
     location: "",
     bio: "",
-    avatar: ""
-  }
-
-  componentDidUpdate() {
-    // console.log(this.state.handle)
-    // console.log(this.state.firstName)
-    // console.log(this.state.middleName)
-    // console.log(this.state.lastName)
-    // console.log(this.state.email)
-    // console.log(this.state.password)
-    // console.log(this.state.passcheck)
-    // console.log(this.state.location)
-    // console.log(this.state.bio)
-    // console.log(this.state.avatar)
+    avatar: "",
+    registration: false
   }
 
   handleInput = (e) => {
@@ -33,10 +23,53 @@ class Register extends Component {
 
   submitHandler = (e) => {
     e.preventDefault()
-    console.log('do axios here to backend')
+
+    if(this.state.password === this.state.passcheck) {
+      try {
+        axios({
+          method: 'post',
+          url: this.state.reglink,
+          data: {
+            handle: this.state.handle,
+            firstName: this.state.firstName,
+            middleName: this.state.middleName,
+            lastName: this.state.lastName,
+            email: this.state.email,
+            password: this.state.password,
+            location: this.state.location,
+            bio: this.state.bio,
+            avatar: this.state.avatar
+          },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+      } catch(err) {
+        this.setState({ password: "",
+                        passcheck: ""})
+      }
+    } else {
+      this.setState({ password: "",
+                      passcheck: ""})
+    }
   }
 
   render() {
+    if(this.state.registration) {
+      setTimeout(() => {
+        this.props.history.push('/login')
+      }, 5000)
+
+      return (
+        <React.Fragment>
+          <div className="container">
+            <h1 className="text-center">Thank you for Registering { this.state.firstName }!</h1>
+            <h5 className="text-center">Redirecting to login page in 5 seconds</h5>
+          </div>
+        </React.Fragment>
+      )
+    }
+
     return (
       <React.Fragment>
         <div className="container">

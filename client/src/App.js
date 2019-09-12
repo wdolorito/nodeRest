@@ -18,13 +18,14 @@ import Posts from './components/Posts'
 
 class App extends Component {
   state = {
+    postlink: "http://192.168.15.20:3000/posts",
     log: "User",
     pass: "",
     posts: []
   }
 
   componentDidMount() {
-    axios.get('http://192.168.15.20:3000/posts')
+    axios.get(this.state.postlink)
      .then((res) => this.setState({ posts: res.data }))
   }
 
