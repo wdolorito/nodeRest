@@ -1,16 +1,48 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
-function Header() {
-  return (
-    <header>
-      <h1>Lame Blog Header</h1>
-      <Link to="/">Home</Link> | <Link to="/about">About</Link> |
-      <Link to="/post/edit">Edit Post</Link> | <Link to="/user/edit">EditUser</Link> |
-      <Link to="/login">Login</Link> | <Link to="/logout">Logout</Link> |
-      <Link to="/posts/user">My Posts</Link> | <Link to="/users">Users</Link>
-    </header>
-  )
+class Header extends Component {
+  render() {
+    return (
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <Link to="/" className="navbar-brand">
+          <img src="/logo512.png" alt="logo" />
+        </Link>
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#headerContent" aria-controls="headerContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+
+        <div className="collapse navbar-collapse" id="headerContent">
+          <ul className="navbar-nav mr-auto align-middle">
+            <li className="nav-item">
+              <Link to="/login" className="nav-link">Login</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/logout" className="nav-link">Logout</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/posts/user" className="nav-link">My Posts</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/post/edit" className="nav-link">Edit Post</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/users" className="nav-link">Lookup users</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/user/edit" className="nav-link">Edit user</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/register" className="nav-link">Register</Link>
+            </li>
+            <li className="nav-item">
+              <p className="navbar-text">Hello { this.props.user }</p>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    )
+  }
 }
 
 export default Header

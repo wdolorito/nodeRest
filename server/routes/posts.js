@@ -31,7 +31,7 @@ const fixPost = (toEdit) => {
       const author = await getAuthor(toEdit.owner)
 
       const post = {}
-      post._id = toEdit._id
+      post.id = toEdit._id
       post.author = author.author
       post.handle = author.handle
       post.title = toEdit.title
