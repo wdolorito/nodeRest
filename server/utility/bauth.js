@@ -99,7 +99,7 @@ exports.bauth = (email, password) => {
       bcrypt.compare(password, user.password, async (err, isMatch) => {
         if(err) throw err
         if(!isMatch) rej('Authentication error')
-        const toSend = await User.findOne({ email }).select('-_id -__v')
+        const toSend = await User.findOne({ email }).select('-__v')
         res(toSend)
       })
     } catch(err) {

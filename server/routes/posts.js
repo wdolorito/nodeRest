@@ -9,8 +9,8 @@ const utils = require('../utility/jwtutils')
 const getAuthor = (id) => {
   return new Promise(async (res, rej) => {
     try {
-      const authorid = await User.find({ _id: id }).select('-__v')
-      const authordata = await UserData.find({ owner: authorid[0]._id }).select('-_id -__v')
+      const authorid = await User.findOne({ _id: id }).select('-__v')
+      const authordata = await UserData.find({ owner: authorid._id }).select('-_id -__v')
       const author = {}
       const name = authordata[0].firstName + ' '
                    + authordata[0].middleName + ' '
@@ -19,7 +19,6 @@ const getAuthor = (id) => {
       author.handle = authordata[0].handle
       res(author)
     } catch(err) {
-      console.log(err)
       rej(err)
     }
   })
@@ -104,7 +103,6 @@ module.exports = server => {
       res.send(tosend)
       next()
     } catch(err) {
-      console.log(err)
       return next(new errors.InvalidContentError(err))
     }
   })

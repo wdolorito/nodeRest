@@ -24,11 +24,15 @@ class App extends Component {
       postslink: "http://192.168.15.20:3000/posts",
       loginlink: "http://192.168.15.20:3000/login",
       logoutlink: "http://192.168.15.20:3000/logout",
+      userpostslink: "http://192.168.15.20:3000//posts/byUser",
       log: "User",
       pass: "",
       jwt: "",
       logflag: false,
-      posts: []
+      posts: [],
+      userposts: [],
+      userpostsstart: false,
+      userpostsavail: false
     }
   }
 
@@ -45,8 +49,15 @@ class App extends Component {
     console.log(this.state.jwt)
     console.log(this.state.logflag)
     localStorage.setItem('jwt', this.state.jwt)
+
     if(this.state.logflag) {
       this.doLogin()
+    }
+
+    if(this.state.userpostsstart) {
+      this.setUserpostsflag(false)
+      this.getUserPosts()
+      this.setState({ userpostsavail: true})
     }
   }
 
@@ -84,7 +95,6 @@ class App extends Component {
   }
 
   doLogin = () => {
-    console.log(this.state.log, this.state.password)
     axios({
       method: 'post',
       url: this.state.loginlink,
@@ -116,13 +126,37 @@ class App extends Component {
     .then(
       (res) => {
         this.resetLog()
-        this.resetPass()
+        this.resetLog()
         this.resetJwt()
       },
       (err) => {
         console.log(err)
       }
     )
+  }
+
+  getUserPosts = () => {
+    console.log('getting user posts', this.state.jwt)
+    axios({
+      method: 'get',
+      url: this.state.userpostslink,
+      headers: {
+        'Authorization': 'Bearer ' + this.state.jwt
+      }
+    })
+    .then(
+      (res) => {
+        this.setState({ userposts: res.data })
+        this.setUserpostsflag(false)
+      },
+      (err) => {
+        console.log(err)
+      }
+    )
+  }
+
+  setUserpostsflag = (flag) => {
+    this.setState({ userpostsstart: flag })
   }
 
   render() {
@@ -159,7 +193,14 @@ class App extends Component {
                                   { ...props }
                                   doLogout={ this.doLogout } /> }
           />
-          <Route path='/posts/user' component={ MyPosts } />
+          <Route
+            path='/posts/user'
+            render={ (props) => <MyPosts
+                                  { ...props }
+                                  userposts={ this.state.userposts }
+                                  userpostsavail={ this.state.userpostsavail }
+                                  setUserpostsflag={ this.setUserpostsflag } /> }
+          />
           <Route path='/register' component={ Register } />
           <Route path='/users' component={ UserLookup } />
           <Footer />
