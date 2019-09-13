@@ -17,16 +17,36 @@ import UserLookup from './components/pages/UserLookup'
 import Posts from './components/Posts'
 
 class App extends Component {
-  state = {
-    postlink: "http://192.168.15.20:3000/posts",
-    log: "User",
-    pass: "",
-    posts: []
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      postslink: "http://192.168.15.20:3000/posts",
+      loginlink: "http://192.168.15.20:3000/login",
+      log: "User",
+      pass: "",
+      jwt: "",
+      logflag: false,
+      posts: []
+    }
   }
 
   componentDidMount() {
-    axios.get(this.state.postlink)
+    if(this.state.jwt === "") {
+      this.setJwt(localStorage.getItem('jwt'))
+    }
+
+    axios.get(this.state.postslink)
      .then((res) => this.setState({ posts: res.data }))
+  }
+
+  componentDidUpdate() {
+    console.log(this.state.jwt)
+    console.log(this.state.logflag)
+    localStorage.setItem('jwt', this.state.jwt)
+    if(this.state.logflag) {
+      this.doLogin()
+    }
   }
 
   setLog = (newlog) => {
@@ -35,6 +55,36 @@ class App extends Component {
 
   setPass = (newpass) => {
     this.setState({ pass: newpass })
+  }
+
+  setJwt = (newjwt) => {
+    this.setState({ jwt: newjwt })
+  }
+
+  setLogflag = (flag) => {
+    this.setState({ logflag: flag })
+  }
+
+  doLogin = () => {
+    console.log(this.state.log, this.state.password)
+    axios({
+      method: 'post',
+      url: this.state.loginlink,
+      data: {
+        email: this.state.log,
+        password: this.state.pass,
+      }
+    })
+    .then(
+      (res) => {
+        this.setJwt(res.data.token)
+        this.setState({ logflag: false })
+      },
+      (err) => {
+        console.log(err)
+        this.setState({ password: '' })
+      }
+    )
   }
 
   render() {
@@ -61,7 +111,9 @@ class App extends Component {
             render={ (props) => <Login
                                   { ...props }
                                   setLog={ this.setLog }
-                                  setPass={ this.setPass } /> }
+                                  setPass={ this.setPass }
+                                  setJwt={ this.setJwt }
+                                  setLogflag={ this.setLogflag } /> }
           />
           <Route path='/logout' component={ Logout } />
           <Route path='/posts/user' component={ MyPosts } />

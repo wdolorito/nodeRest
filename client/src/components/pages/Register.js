@@ -23,12 +23,12 @@ class Register extends Component {
     this.baseState = this.state
   }
 
-  handleInput = (e) => {
-    this.setState({ [e.target.name]: e.target.value })
-  }
-
   resetForm = () => {
     this.setState(this.baseState)
+  }
+
+  handleInput = (e) => {
+    this.setState({ [e.target.name]: e.target.value })
   }
 
   submitHandler = (e) => {

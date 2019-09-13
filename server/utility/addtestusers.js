@@ -29,7 +29,7 @@ const saveUser = (user, userdata) => {
 
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(user.password, salt, async (err, hash) => {
-        newuser.password = hash;
+        newuser.password = hash
 
         try {
           console.log(await newuser.save())
