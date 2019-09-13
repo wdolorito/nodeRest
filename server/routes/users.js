@@ -115,6 +115,7 @@ module.exports = server => {
       const token = jwt.sign(user.toJSON(), process.env.APP_SECRET, { expiresIn: '30m' })
       const { iat, exp } = jwt.decode(token)
       res.send({ iat, exp, token })
+      next()
     } catch(err) {
       return next(new errors.UnauthorizedError(err))
     }
@@ -126,7 +127,8 @@ module.exports = server => {
       const pToken = resToken.split(' ')[1]
       const newBlacklist = new Blacklist({ token: pToken })
       await newBlacklist.save()
-      res.send(200)
+      res.send(200, 'logged out')
+      next()
     } catch(err) {
       return next(new errors.InternalError('db error'))
     }
@@ -247,7 +249,7 @@ module.exports = server => {
     if(canaction && (Object.keys(req.body).length !== 0)) {
       try {
         await UserData.updateOne({ owner: towork }, { $set: req.body })
-        res.send(200)
+        res.send(200, 'updated user')
         next()
       } catch(err) {
         return next(new errors.ResourceNotFoundError('User does not exist'))
@@ -282,7 +284,7 @@ module.exports = server => {
         await User.deleteOne({ _id: req.params.id })
         await UserData.deleteOne({ owner: req.params.id })
         await Post.deleteMany({ owner: req.params.id })
-        res.send(204)
+        res.send(204, 'deleeted user')
         next()
       } catch(err) {
         return next(new errors.ResourceNotFoundError('User not found'))

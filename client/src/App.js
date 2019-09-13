@@ -23,6 +23,7 @@ class App extends Component {
     this.state = {
       postslink: "http://192.168.15.20:3000/posts",
       loginlink: "http://192.168.15.20:3000/login",
+      logoutlink: "http://192.168.15.20:3000/logout",
       log: "User",
       pass: "",
       jwt: "",
@@ -53,16 +54,33 @@ class App extends Component {
     this.setState({ log: newlog })
   }
 
+  resetLog = () => {
+    this.setState({ log: "" })
+  }
+
   setPass = (newpass) => {
     this.setState({ pass: newpass })
+  }
+
+  resetPass = () => {
+    this.setState({ pass: "" })
   }
 
   setJwt = (newjwt) => {
     this.setState({ jwt: newjwt })
   }
 
+  resetJwt = () => {
+    this.setState({ jwt: "" })
+    this.resetLogflag()
+  }
+
   setLogflag = (flag) => {
     this.setState({ logflag: flag })
+  }
+
+  resetLogflag = () => {
+    this.setState({ logflag: false })
   }
 
   doLogin = () => {
@@ -78,11 +96,31 @@ class App extends Component {
     .then(
       (res) => {
         this.setJwt(res.data.token)
-        this.setState({ logflag: false })
+        this.resetLogflag()
       },
       (err) => {
         console.log(err)
         this.setState({ password: '' })
+      }
+    )
+  }
+
+  doLogout = () => {
+    axios({
+      method: 'post',
+      url: this.state.logoutlink,
+      headers: {
+        'Authorization': 'Bearer ' + this.state.jwt
+      }
+    })
+    .then(
+      (res) => {
+        this.resetLog()
+        this.resetPass()
+        this.resetJwt()
+      },
+      (err) => {
+        console.log(err)
       }
     )
   }
@@ -115,7 +153,12 @@ class App extends Component {
                                   setJwt={ this.setJwt }
                                   setLogflag={ this.setLogflag } /> }
           />
-          <Route path='/logout' component={ Logout } />
+          <Route
+            path='/logout'
+            render={ (props) => <Logout
+                                  { ...props }
+                                  doLogout={ this.doLogout } /> }
+          />
           <Route path='/posts/user' component={ MyPosts } />
           <Route path='/register' component={ Register } />
           <Route path='/users' component={ UserLookup } />

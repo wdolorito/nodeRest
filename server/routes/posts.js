@@ -82,7 +82,7 @@ module.exports = server => {
 
       try {
         const newPost = await post.save()
-        res.send(201)
+        res.send(201, 'saved post')
         next()
       } catch(err) {
         return next(new errors.InternalError('db error'))
@@ -231,7 +231,7 @@ module.exports = server => {
     if(canaction) {
       try {
         await Post.updateOne({ _id: post._id}, { $set: req.body }).select('-__v')
-        res.send(200)
+        res.send(200, 'updated post')
         next()
       } catch(err) {
         return next(new errors.ResourceNotFoundError('Post not found'))
@@ -263,7 +263,7 @@ module.exports = server => {
     if(canaction) {
       try {
         await Post.deleteOne({ _id: req.params.id})
-        res.send(204)
+        res.send(204, 'deleted post')
         next()
       } catch(err) {
         return next(new errors.ResourceNotFoundError('Post not found'))

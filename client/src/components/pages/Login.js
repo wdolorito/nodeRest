@@ -40,7 +40,7 @@ class Login extends Component {
       return (
         <React.Fragment>
           <div className="container">
-            <h1 className="text-center">Loggin in now...</h1>
+            <h1 className="text-center">Logging in now...</h1>
             <h5 className="text-center">Redirecting to your posts in 5 seconds</h5>
           </div>
         </React.Fragment>
