@@ -85,7 +85,7 @@ module.exports = server => {
 
     try {
       const userData = new UserData({
-        owner: newUser._id,
+        owner: user._id,
         handle,
         firstName,
         middleName,

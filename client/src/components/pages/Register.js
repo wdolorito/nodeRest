@@ -2,55 +2,64 @@ import React, { Component } from 'react'
 import axios from 'axios'
 
 class Register extends Component {
-  state = {
-    reglink: "http://192.168.15.20:3000/register",
-    handle: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    passcheck: "",
-    location: "",
-    bio: "",
-    avatar: "",
-    registration: false
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      reglink: "http://192.168.15.20:3000/register",
+      handle: "",
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      passcheck: "",
+      location: "",
+      bio: "",
+      avatar: "",
+      registration: false
+    }
+
+    this.baseState = this.state
   }
 
   handleInput = (e) => {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  resetForm = () => {
+    this.setState(this.baseState)
+  }
+
   submitHandler = (e) => {
     e.preventDefault()
 
     if(this.state.password === this.state.passcheck) {
-      try {
-        axios({
-          method: 'post',
-          url: this.state.reglink,
-          data: {
-            handle: this.state.handle,
-            firstName: this.state.firstName,
-            middleName: this.state.middleName,
-            lastName: this.state.lastName,
-            email: this.state.email,
-            password: this.state.password,
-            location: this.state.location,
-            bio: this.state.bio,
-            avatar: this.state.avatar
-          },
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-      } catch(err) {
-        this.setState({ password: "",
-                        passcheck: ""})
-      }
-    } else {
-      this.setState({ password: "",
-                      passcheck: ""})
+      axios({
+        method: 'post',
+        url: this.state.reglink,
+        data: {
+          handle: this.state.handle,
+          firstName: this.state.firstName,
+          middleName: this.state.middleName,
+          lastName: this.state.lastName,
+          email: this.state.email,
+          password: this.state.password,
+          location: this.state.location,
+          bio: this.state.bio,
+          avatar: this.state.avatar
+        }
+      })
+      .then(
+        (res) => {
+          this.resetForm()
+          this.setState({ registration: true })
+        },
+        (err) => {
+          console.log(err)
+          this.setState({ password: '', passcheck: ''})
+        }
+      )
     }
   }
 
