@@ -53,34 +53,40 @@ class Login extends Component {
           <h1 className="text-center">Login to the site</h1>
 
           <div className="row">
-            <div className="col-md-2">
+            <div className="col-md-3">
             </div>
-            <div className="col-md-8">
+            <div className="col-md-6">
               <form onSubmit={ this.submitHandler }>
                 <div className="form-row">
-                  <div className="form-group col-md-6">
+                  <div className="form-group col-md-12">
                     <input type="text"
                     className="form-control"
                     id="emailInput"
                     name="email"
                     value={ this.state.email }
                     onChange={ this.handleInput }
-                    placeholder="E-mail address (eg. user@ex.com)" />
+                    placeholder="E-mail address (eg. user@ex.com)"
+                    required />
+                  </div>
+                  <div className="form-group col-md-12">
                     <input
-                      type="text"
+                      type="password"
                       className="form-control"
                       id="passwordInput"
                       name="password"
                       value={ this.state.password }
                       onChange={ this.handleInput }
-                      placeholder="Password" />
+                      placeholder="Password"
+                      required />
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary mb-2">Sign In</button>
+                <div className="text-center">
+                  <button type="submit" className="btn btn-primary mb-2">Sign In</button>
+                </div>
               </form>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-3">
             </div>
           </div>
         </div>

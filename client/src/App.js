@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+
 import axios from 'axios'
 
 import Header from './components/layout/Header'
@@ -21,10 +22,10 @@ class App extends Component {
     super(props)
 
     this.state = {
-      postslink: "http://192.168.15.20:3000/posts",
-      loginlink: "http://192.168.15.20:3000/login",
-      logoutlink: "http://192.168.15.20:3000/logout",
-      userpostslink: "http://192.168.15.20:3000//posts/byUser",
+      postslink: "https://d0odtech.sytes.net/blog/posts",
+      loginlink: "https://d0odtech.sytes.net/blog/login",
+      logoutlink: "https://d0odtech.sytes.net/blog/logout",
+      userpostslink: "https://d0odtech.sytes.net/blog/posts/byUser",
       log: "User",
       pass: "",
       jwt: "",

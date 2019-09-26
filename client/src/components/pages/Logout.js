@@ -40,7 +40,7 @@ class Logout extends Component {
           <div className="row">
             <div className="col-md-2">
             </div>
-            <div className="col-md-8">
+            <div className="col-md-8 text-center">
               <form onSubmit={ this.submitHandler }>
                 <button type="submit" className="btn btn-primary mb-2">Sign Out</button>
               </form>

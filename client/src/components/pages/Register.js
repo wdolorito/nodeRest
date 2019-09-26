@@ -6,7 +6,7 @@ class Register extends Component {
     super(props)
 
     this.state = {
-      reglink: "http://192.168.15.20:3000/register",
+      reglink: "https://d0odtech.sytes.net/blog/register",
       handle: "",
       firstName: "",
       middleName: "",
@@ -21,6 +21,10 @@ class Register extends Component {
     }
 
     this.baseState = this.state
+  }
+
+  componentDidUpdate() {
+    console.log(this.state.bio)
   }
 
   resetForm = () => {
@@ -85,12 +89,12 @@ class Register extends Component {
           <h1 className="text-center">Register for an account</h1>
 
           <div className="row">
-            <div className="col-md-2">
+            <div className="col-md-3">
             </div>
-            <div className="col-md-8">
+            <div className="col-md-6">
               <form onSubmit={ this.submitHandler }>
                 <div className="form-row">
-                  <div className="form-group col-md-6">
+                  <div className="form-group col-md-12">
                     <input
                       type="text"
                       className="form-control"
@@ -98,7 +102,8 @@ class Register extends Component {
                       name="handle"
                       value={ this.state.handle }
                       onChange={ this.handleInput }
-                      placeholder="Your Username" />
+                      placeholder="Your Username*"
+                      required />
                   </div>
                 </div>
 
@@ -111,7 +116,8 @@ class Register extends Component {
                       name="firstName"
                       value={ this.state.firstName }
                       onChange={ this.handleInput }
-                      placeholder="First Name" />
+                      placeholder="First Name*"
+                      required />
                   </div>
                   <div className="form-group col-md-4">
                     <input type="text" className="form-control"
@@ -134,42 +140,45 @@ class Register extends Component {
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group col-md-6">
+                  <div className="form-group col-md-12">
                     <input type="text"
                     className="form-control"
                     id="emailInput"
                     name="email"
                     value={ this.state.email }
                     onChange={ this.handleInput }
-                    placeholder="E-mail address (eg. user@ex.com)" />
+                    placeholder="E-mail address (eg. user@ex.com)*"
+                    required />
                   </div>
                 </div>
 
                 <div className="form-row">
                   <div className="form-group col-md-6">
                     <input
-                      type="text"
+                      type="password"
                       className="form-control"
                       id="passwordInput"
                       name="password"
                       value={ this.state.password }
                       onChange={ this.handleInput }
-                      placeholder="Password" />
+                      placeholder="Password*"
+                      required />
                   </div>
                   <div className="form-group col-md-6">
                     <input
-                      type="text"
+                      type="password"
                       className="form-control"
                       id="passwordInput2"
                       name="passcheck"
                       value={ this.state.passcheck }
                       onChange={ this.handleInput }
-                      placeholder="*Password check" />
+                      placeholder="Re-enter password*"
+                      required />
                   </div>
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group col-md-6">
+                  <div className="form-group col-md-12">
                     <input
                       type="text"
                       className="form-control"
@@ -182,20 +191,21 @@ class Register extends Component {
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group col-md-6">
-                    <input
-                      type="text"
+                  <div className="form-group col-md-12">
+                    <textarea
+                      rows="4"
                       className="form-control"
                       id="bioInput"
                       name="bio"
                       value={ this.state.bio }
                       onChange={ this.handleInput }
-                      placeholder="Share some details about yourself" />
+                      placeholder="Share some details about yourself">
+                    </textarea>
                   </div>
                 </div>
 
                 <div className="form-row">
-                  <div className="form-group col-md-6">
+                  <div className="form-group col-md-12">
                     <input
                       type="text"
                       className="form-control"
@@ -210,7 +220,7 @@ class Register extends Component {
                 <button type="submit" className="btn btn-primary mb-2">Register</button>
               </form>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-3">
             </div>
           </div>
         </div>
