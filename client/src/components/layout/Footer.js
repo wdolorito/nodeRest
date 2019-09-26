@@ -4,9 +4,6 @@ import { Link } from 'react-router-dom'
 function Footer() {
   return (
     <div className="card">
-      <div className="card-header text-center">
-        Lame Blog Footer
-      </div>
       <div className="card-body">
         <div className="container">
           <div className="row">
