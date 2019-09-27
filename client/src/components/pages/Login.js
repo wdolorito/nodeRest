@@ -35,13 +35,13 @@ class Login extends Component {
     if(this.state.loggedin) {
       setTimeout(() => {
         this.props.history.push('/posts/user')
-      }, 5000)
+      }, 4000)
 
       return (
         <React.Fragment>
           <div className="container">
             <h1 className="text-center">Logging in now...</h1>
-            <h5 className="text-center">Redirecting to your posts in 5 seconds</h5>
+            <h5 className="text-center">Redirecting to your posts in 4 seconds</h5>
           </div>
         </React.Fragment>
       )

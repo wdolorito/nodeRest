@@ -1,12 +1,20 @@
-import React from 'react'
+import React, { Component } from 'react'
+import Users from '../Users'
 
-function UserLookup() {
-  return (
-    <React.Fragment>
-      <h1>Show Users</h1>
-      <p>Lookee what we have here, foo!</p>
-    </React.Fragment>
-  )
+class UserLookup extends Component {
+  componentDidMount() {
+    this.props.setLookup(true)
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <Users
+          users={ this.props.users }
+        />
+      </React.Fragment>
+    )
+  }
 }
 
 export default UserLookup

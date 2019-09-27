@@ -12,13 +12,13 @@ export class PostItem extends Component {
   }
 
   componentDidMount() {
-    this.setState({id: this.props.post.id})
-    this.setState({author: this.props.post.author})
-    this.setState({handle: this.props.post.handle})
-    this.setState({title: this.props.post.title})
-    this.setState({body: this.props.post.body})
-    this.setState({updatedAt: this.props.post.updatedAt})
-    this.setState({createdAt: this.props.post.createdAt})
+    this.setState({ id: this.props.post.id })
+    this.setState({ author: this.props.post.author })
+    this.setState({ handle: this.props.post.handle })
+    this.setState({ title: this.props.post.title })
+    this.setState({ body: this.props.post.body })
+    this.setState({ updatedAt: this.props.post.updatedAt })
+    this.setState({ createdAt: this.props.post.createdAt })
   }
 
   render() {

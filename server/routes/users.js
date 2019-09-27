@@ -113,8 +113,9 @@ module.exports = server => {
     try {
       const user = await bauth.bauth(email, password)
       const token = jwt.sign(user.toJSON(), process.env.APP_SECRET, { expiresIn: '30m' })
-      const { iat, exp } = jwt.decode(token)
-      res.send({ iat, exp, token })
+      const { _id, iat, exp } = jwt.decode(token)
+      const luser = await getUser(_id)
+      res.send({ iat, exp, token, luser })
       next()
     } catch(err) {
       return next(new errors.UnauthorizedError(err))

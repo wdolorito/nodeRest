@@ -17,11 +17,22 @@ class MyPosts extends Component {
       )
     }
 
+    if(this.props.user === 'User') {
+      setTimeout(() => {
+        this.props.history.push('/login')
+      }, 2000)
+
+      return(
+        <React.Fragment>
+          <h1 className="text-center">Please log in...</h1>
+        </React.Fragment>
+      )
+    }
+
     return(
       <React.Fragment>
-        <h1>Looking up your posts...</h1>
+        <h1 className="text-center">Looking up your posts...</h1>
       </React.Fragment>
-
     )
   }
 }

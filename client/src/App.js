@@ -26,6 +26,9 @@ class App extends Component {
       loginlink: "https://d0odtech.sytes.net/blog/login",
       logoutlink: "https://d0odtech.sytes.net/blog/logout",
       userpostslink: "https://d0odtech.sytes.net/blog/posts/byUser",
+      userslink: "https://d0odtech.sytes.net/blog/users",
+      dispname: "User",
+      dispflag: false,
       log: "User",
       pass: "",
       jwt: "",
@@ -33,7 +36,10 @@ class App extends Component {
       posts: [],
       userposts: [],
       userpostsstart: false,
-      userpostsavail: false
+      userpostsavail: false,
+      userstate: [],
+      users: [],
+      lookupusers: false
     }
   }
 
@@ -47,18 +53,33 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.state.jwt)
-    console.log(this.state.logflag)
     localStorage.setItem('jwt', this.state.jwt)
 
     if(this.state.logflag) {
       this.doLogin()
+    } else {
+      if(this.state.dispflag && this.state.userstate.length > 0 ) {
+        let disp = 'User'
+        const fn = this.state.userstate[1].firstName
+        const mn = this.state.userstate[1].middleName
+        const ln = this.state.userstate[1].lastName
+        if(fn.length > 0) disp = fn
+        if(mn.length > 0 && disp !== 'User') disp += ' ' + mn
+        if(ln.length > 0 && disp !== 'User') disp += ' ' + ln
+        this.setState({ dispname: disp })
+        this.setState({ dispflag: false })
+      }
     }
 
     if(this.state.userpostsstart) {
       this.setUserpostsflag(false)
       this.getUserPosts()
       this.setState({ userpostsavail: true})
+    }
+
+    if(this.state.lookupusers) {
+      this.resetLookup()
+      this.doUserLookup()
     }
   }
 
@@ -67,7 +88,7 @@ class App extends Component {
   }
 
   resetLog = () => {
-    this.setState({ log: "" })
+    this.setState({ log: 'User' })
   }
 
   setPass = (newpass) => {
@@ -75,7 +96,7 @@ class App extends Component {
   }
 
   resetPass = () => {
-    this.setState({ pass: "" })
+    this.setState({ pass: '' })
   }
 
   setJwt = (newjwt) => {
@@ -83,7 +104,7 @@ class App extends Component {
   }
 
   resetJwt = () => {
-    this.setState({ jwt: "" })
+    this.setState({ jwt: '' })
     this.resetLogflag()
   }
 
@@ -96,6 +117,7 @@ class App extends Component {
   }
 
   doLogin = () => {
+    this.resetLogflag()
     axios({
       method: 'post',
       url: this.state.loginlink,
@@ -106,12 +128,14 @@ class App extends Component {
     })
     .then(
       (res) => {
-        this.setJwt(res.data.token)
-        this.resetLogflag()
+        if(res.status === 200) {
+          this.setJwt(res.data.token)
+          this.setState({ userstate: res.data.luser })
+          this.setState({ dispflag: true })
+        }
       },
       (err) => {
         console.log(err)
-        this.setState({ password: '' })
       }
     )
   }
@@ -127,7 +151,9 @@ class App extends Component {
     .then(
       (res) => {
         this.resetLog()
-        this.resetLog()
+        this.resetPass()
+        this.setState({ userposts: [] })
+        this.setState({ dispname: 'User' })
         this.resetJwt()
       },
       (err) => {
@@ -137,18 +163,71 @@ class App extends Component {
   }
 
   getUserPosts = () => {
-    console.log('getting user posts', this.state.jwt)
+    this.setState({ userposts: [] })
+    if(this.state.log !== 'User') {
+      axios({
+        method: 'get',
+        url: this.state.userpostslink,
+        headers: {
+          'Authorization': 'Bearer ' + this.state.jwt
+        }
+      })
+      .then(
+        (res) => {
+          this.setState({ userposts: res.data })
+          this.setUserpostsflag(false)
+        },
+        (err) => {
+          console.log(err)
+        }
+      )
+    }
+  }
+
+  setUserpostsflag = (flag) => {
+    this.setState({ userpostsstart: flag })
+  }
+
+  updateUser = (updated) => {
+    if(this.state.log !== 'User') {
+      axios({
+        method: 'get',
+        url: this.state.userslink,
+        headers: {
+          'Authorization': 'Bearer ' + this.state.jwt
+        }
+      })
+      .then(
+        (res) => {
+          console.log(res.data)
+        },
+        (err) => {
+          console.log(err)
+        }
+      )
+    }
+  }
+
+  setLookup = (lookup) => {
+    this.setState({ lookupusers: lookup })
+  }
+
+  resetLookup = () => {
+    this.setState({ lookupusers: false })
+  }
+
+  doUserLookup = () => {
+    this.setState({ users: [] })
     axios({
       method: 'get',
-      url: this.state.userpostslink,
+      url: this.state.userslink,
       headers: {
         'Authorization': 'Bearer ' + this.state.jwt
       }
     })
     .then(
       (res) => {
-        this.setState({ userposts: res.data })
-        this.setUserpostsflag(false)
+        this.setState({ users: res.data })
       },
       (err) => {
         console.log(err)
@@ -156,16 +235,12 @@ class App extends Component {
     )
   }
 
-  setUserpostsflag = (flag) => {
-    this.setState({ userpostsstart: flag })
-  }
-
   render() {
     return (
       <Router>
         <div className='App'>
           <div className='container'>
-          <Header user={ this.state.log }/>
+          <Header user={ this.state.dispname }/>
           <Route
             exact path='/'
             render={ (props) => (
@@ -178,7 +253,11 @@ class App extends Component {
           />
           <Route path='/about' component={ About } />
           <Route path='/post/edit' component={ EditPost } />
-          <Route path='/user/edit' component={ EditUser } />
+          <Route path='/user/edit'
+            render={ (props) => <EditUser
+                                  { ...props }
+                                  updateUser={ this.updateUser } /> }
+          />
           <Route
             path='/login'
             render={ (props) => <Login
@@ -200,10 +279,17 @@ class App extends Component {
                                   { ...props }
                                   userposts={ this.state.userposts }
                                   userpostsavail={ this.state.userpostsavail }
-                                  setUserpostsflag={ this.setUserpostsflag } /> }
+                                  setUserpostsflag={ this.setUserpostsflag }
+                                  user={ this.state.log } /> }
           />
           <Route path='/register' component={ Register } />
-          <Route path='/users' component={ UserLookup } />
+          <Route
+            path='/users'
+            render={ (props) => <UserLookup
+                                  { ...props }
+                                  users={ this.state.users }
+                                  setLookup={ this.setLookup } /> }
+          />
           <Footer />
           </div>
         </div>
