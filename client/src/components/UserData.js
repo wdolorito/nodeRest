@@ -26,30 +26,25 @@ export class UserData extends Component {
 
   componentDidMount() {
     this.setState({ handle: this.props.userdata.handle })
-    this.setState({ firstName: this.props.userdata.id })
-    this.setState({ middleName: this.props.userdata.id })
-    this.setState({ lastName: this.props.userdata.id })
-    this.setState({ bio: this.props.userdata.id })
-    this.setState({ location: this.props.userdata.id })
-    this.setState({ avatar: this.props.userdata.id })
-    this.setState({ updatedAt: this.props.userdata.id })
-    this.setState({ createdAt: this.props.userdata.id })
+    this.setState({ firstName: this.props.userdata.firstName })
+    this.setState({ middleName: this.props.userdata.middleName })
+    this.setState({ lastName: this.props.userdata.lastName })
+    this.setState({ bio: this.props.userdata.bio })
+    this.setState({ location: this.props.userdata.location })
+    this.setState({ avatar: this.props.userdata.avatar })
+    this.setState({ updatedAt: this.props.userdata.updatedAt })
+    this.setState({ createdAt: this.props.userdata.createdAt })
   }
 
   render() {
     return (
-      <div className='card'>
-        <div className='card-body'>
-          <h5 className='card-title'>{ this.state.handle }</h5>
-          <h6 className='card-subtitle text-muted'>{ this.getFullName() }</h6>
-          <p className='card-text font-weight-bold'>Bio:</p>
-          <p className='card-text'>{ this.state.bio }</p>
-          <p className='card-text font-weight-bold'>Location:</p>
-          <p className='card-text'>{ this.state.location }</p>
-          <p className='card-text font-weight-bold'>Avatar:</p>
-          <p className='card-text'>{ this.state.avatar }</p>
-        </div>
-      </div>
+      <React.Fragment>
+        <h5 className='card-title'>{ this.state.handle }</h5>
+        <h6 className='card-subtitle text-muted mb-2'>{ this.getFullName() }</h6>
+        <p className='card-text'><strong>Bio: </strong>{ this.state.bio }</p>
+        <p className='card-text'><strong>Location: </strong>{ this.state.location }</p>
+        <p className='card-text'><strong>Avatar: </strong>{ this.state.avatar }</p>
+      </React.Fragment>
     )
   }
 }

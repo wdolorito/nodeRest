@@ -17,11 +17,10 @@ export class User extends Component {
 
   render() {
     return (
-      <div className='card'>
-        <div className='card-body'>
-          <h5 className="card-text"><strong>Email: </strong>{ this.state.email }</h5>
-        </div>
-      </div>
+      <React.Fragment>
+        <p className="card-text"><strong>Email: </strong>{ this.state.email }</p>
+        <p className="card-text"><strong>ID: </strong>{ this.state.id }</p>
+      </React.Fragment>
     )
   }
 }
