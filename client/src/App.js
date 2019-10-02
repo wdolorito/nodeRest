@@ -26,30 +26,30 @@ class App extends Component {
     this.cancel = null
 
     this.state = {
-      postslink: "https://d0odtech.sytes.net/blog/posts",
-      loginlink: "https://d0odtech.sytes.net/blog/login",
-      logoutlink: "https://d0odtech.sytes.net/blog/logout",
-      userpostslink: "https://d0odtech.sytes.net/blog/posts/byUser",
-      userslink: "https://d0odtech.sytes.net/blog/users",
-      dispname: "User",
+      postslink: 'https://d0odtech.sytes.net/blog/posts',
+      loginlink: 'https://d0odtech.sytes.net/blog/login',
+      logoutlink: 'https://d0odtech.sytes.net/blog/logout',
+      userpostslink: 'https://d0odtech.sytes.net/blog/posts/byUser',
+      userslink: 'https://d0odtech.sytes.net/blog/users',
+      dispname: 'User',
       dispflag: false,
-      log: "User",
-      pass: "",
-      jwt: "",
+      log: 'User',
+      pass: '',
+      jwt: '',
       logflag: false,
       posts: [],
       userposts: [],
       userpostsstart: false,
       userpostsavail: false,
       userstate: [],
-      usertype: "user",
+      usertype: 'user',
       users: [],
       lookupusers: false
     }
   }
 
   componentDidMount() {
-    if(this.state.jwt === "") {
+    if(this.state.jwt === '') {
       this.setJwt(localStorage.getItem('jwt'))
     }
 
@@ -254,7 +254,9 @@ class App extends Component {
       <Router>
         <div className='App'>
           <div className='container'>
-          <Header user={ this.state.dispname }/>
+          <Header
+            user={ this.state.dispname }
+            usertype={ this.state.usertype } />
           <Route
             exact path='/'
             render={ (props) => (

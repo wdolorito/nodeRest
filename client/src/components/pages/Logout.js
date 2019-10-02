@@ -4,14 +4,23 @@ class Logout extends Component {
   constructor(props) {
     super(props)
 
+    this.interval = null
+
     this.state = {
       loggedout: false,
       time: 5
     }
+
+    this.baseState = this.state
   }
 
   componentWillUnmount() {
     clearInterval(this.interval)
+    this.reset()
+  }
+
+  reset = () => {
+    this.setState(this.baseState)
   }
 
   submitHandler = (e) => {
@@ -25,9 +34,6 @@ class Logout extends Component {
     const time = this.state.time
 
     if(time === 1) {
-      clearInterval(this.interval)
-      this.setState({ time: 5 })
-      this.setState({ loggedout: false })
       this.props.history.push('/')
     } else {
       this.setState(prevState => ({ time: prevState.time - 1}))
@@ -36,7 +42,7 @@ class Logout extends Component {
 
   render() {
     if(this.state.loggedout === true) {
-      this.interval = setInterval(this.countDown, 1000)
+      if(this.interval === null) this.interval = setInterval(this.countDown, 1000)
 
       return (
         <React.Fragment>

@@ -4,6 +4,8 @@ class Login extends Component {
   constructor(props) {
     super(props)
 
+    this.interval = null
+
     this.state = {
       email: "",
       password: "",
@@ -16,6 +18,7 @@ class Login extends Component {
 
   componentWillUnmount() {
     clearInterval(this.interval)
+    this.resetForm()
   }
 
   resetForm = () => {
@@ -40,8 +43,7 @@ class Login extends Component {
     const time = this.state.time
 
     if(time === 1) {
-      clearInterval(this.interval)
-      this.resetForm()
+
       if(this.props.usertype === 'user') {
         this.props.history.push('/posts/user')
       } else {
@@ -54,7 +56,7 @@ class Login extends Component {
 
   render() {
     if(this.state.loggedin) {
-      this.interval = setInterval(this.countDown, 1000)
+      if(this.interval === null) this.interval = setInterval(this.countDown, 1000)
 
       return (
         <React.Fragment>

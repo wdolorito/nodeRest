@@ -5,19 +5,22 @@ class Register extends Component {
   constructor(props) {
     super(props)
 
+    this.interval = null
+
     this.state = {
-      reglink: "https://d0odtech.sytes.net/blog/register",
-      handle: "",
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      passcheck: "",
-      location: "",
-      bio: "",
-      avatar: "",
-      registration: false
+      reglink: 'https://d0odtech.sytes.net/blog/register',
+      handle: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      passcheck: '',
+      location: '',
+      bio: '',
+      avatar: '',
+      registration: false,
+      time: 5
     }
 
     this.baseState = this.state
@@ -25,6 +28,11 @@ class Register extends Component {
 
   componentDidUpdate() {
     console.log(this.state.bio)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
+    this.resetForm()
   }
 
   resetForm = () => {
@@ -67,17 +75,25 @@ class Register extends Component {
     }
   }
 
+  countDown = () => {
+    const time = this.state.time
+
+    if(time === 1) {
+      this.props.history.push('/login')
+    } else {
+      this.setState(prevState => ({ time: prevState.time - 1}))
+    }
+  }
+
   render() {
     if(this.state.registration) {
-      setTimeout(() => {
-        this.props.history.push('/login')
-      }, 5000)
+      if(this.interval === null) this.interval = setInterval(this.countDown, 1000)
 
       return (
         <React.Fragment>
           <div className="container">
             <h1 className="text-center">Thank you for Registering { this.state.firstName }!</h1>
-            <h5 className="text-center">Redirecting to login page in 5 seconds</h5>
+            <h5 className="text-center">Redirecting to login page in { this.state.time } seconds</h5>
           </div>
         </React.Fragment>
       )
