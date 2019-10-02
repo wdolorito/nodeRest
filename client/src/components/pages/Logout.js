@@ -5,8 +5,13 @@ class Logout extends Component {
     super(props)
 
     this.state = {
-      loggedout: false
+      loggedout: false,
+      time: 5
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   submitHandler = (e) => {
@@ -16,17 +21,28 @@ class Logout extends Component {
     this.setState({ loggedout: true })
   }
 
+  countDown = () => {
+    const time = this.state.time
+
+    if(time === 1) {
+      clearInterval(this.interval)
+      this.setState({ time: 5 })
+      this.setState({ loggedout: false })
+      this.props.history.push('/')
+    } else {
+      this.setState(prevState => ({ time: prevState.time - 1}))
+    }
+  }
+
   render() {
-    if(this.state.loggedout) {
-      setTimeout(() => {
-        this.props.history.push('/')
-      }, 5000)
+    if(this.state.loggedout === true) {
+      this.interval = setInterval(this.countDown, 1000)
 
       return (
         <React.Fragment>
           <div className="container">
             <h1 className="text-center">Logging out now...</h1>
-            <h5 className="text-center">Going to homepage in 5 seconds</h5>
+            <h5 className="text-center">Going to homepage in { this.state.time } seconds</h5>
           </div>
         </React.Fragment>
       )

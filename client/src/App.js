@@ -17,9 +17,13 @@ import UserLookup from './components/pages/UserLookup'
 
 import Posts from './components/Posts'
 
+const CancelToken = axios.CancelToken
+
 class App extends Component {
   constructor(props) {
     super(props)
+
+    this.cancel = null
 
     this.state = {
       postslink: "https://d0odtech.sytes.net/blog/posts",
@@ -38,6 +42,7 @@ class App extends Component {
       userpostsstart: false,
       userpostsavail: false,
       userstate: [],
+      usertype: "user",
       users: [],
       lookupusers: false
     }
@@ -83,6 +88,10 @@ class App extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.cancel()
+  }
+
   setLog = (newlog) => {
     this.setState({ log: newlog })
   }
@@ -121,6 +130,7 @@ class App extends Component {
     axios({
       method: 'post',
       url: this.state.loginlink,
+      cancelToken: new CancelToken(c => this.cancel = c ),
       data: {
         email: this.state.log,
         password: this.state.pass,
@@ -131,6 +141,7 @@ class App extends Component {
         if(res.status === 200) {
           this.setJwt(res.data.token)
           this.setState({ userstate: res.data.luser })
+          this.setState({ usertype: res.data.whoami })
           this.setState({ dispflag: true })
         }
       },
@@ -144,6 +155,7 @@ class App extends Component {
     axios({
       method: 'post',
       url: this.state.logoutlink,
+      cancelToken: new CancelToken(c => this.cancel = c ),
       headers: {
         'Authorization': 'Bearer ' + this.state.jwt
       }
@@ -168,6 +180,7 @@ class App extends Component {
       axios({
         method: 'get',
         url: this.state.userpostslink,
+        cancelToken: new CancelToken(c => this.cancel = c ),
         headers: {
           'Authorization': 'Bearer ' + this.state.jwt
         }
@@ -193,6 +206,7 @@ class App extends Component {
       axios({
         method: 'get',
         url: this.state.userslink,
+        cancelToken: new CancelToken(c => this.cancel = c ),
         headers: {
           'Authorization': 'Bearer ' + this.state.jwt
         }

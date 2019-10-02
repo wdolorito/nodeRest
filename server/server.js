@@ -14,11 +14,10 @@ server.use(rjwt({ secret: process.env.APP_SECRET }).unless({ path: unprotected }
 
 const cors = corsMiddleware({
   origins: [
+    'http://localhost:3000',
     'http://192.168.15.*'
   ],
-  allowHeaders: [
-    'Authorization'
-  ]
+  allowHeaders: [ 'Authorization' ]
 })
 server.pre(cors.preflight)
 server.pre(cors.actual)

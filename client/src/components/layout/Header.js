@@ -30,7 +30,7 @@ class Header extends Component {
             </li>
 */}
             <li className="nav-item">
-              <Link to="/users" className="nav-link">Lookup users</Link>
+              <Link to="/users" className="nav-link">Users</Link>
             </li>
 {/*
             <li className="nav-item">

@@ -7,10 +7,15 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
+      time: 5,
       loggedin: false
     }
 
     this.baseState = this.state
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   resetForm = () => {
@@ -31,17 +36,27 @@ class Login extends Component {
     this.setState({ loggedin: true })
   }
 
+  countDown = () => {
+    const time = this.state.time
+
+    if(time === 1) {
+      clearInterval(this.interval)
+      this.resetForm()
+      this.props.history.push('/posts/user')
+    } else {
+      this.setState(prevState => ({ time: prevState.time - 1}))
+    }
+  }
+
   render() {
     if(this.state.loggedin) {
-      setTimeout(() => {
-        this.props.history.push('/posts/user')
-      }, 4000)
+      this.interval = setInterval(this.countDown, 1000)
 
       return (
         <React.Fragment>
           <div className="container">
             <h1 className="text-center">Logging in now...</h1>
-            <h5 className="text-center">Redirecting to your posts in 4 seconds</h5>
+            <h5 className="text-center">Redirecting to your posts in { this.state.time } seconds</h5>
           </div>
         </React.Fragment>
       )
