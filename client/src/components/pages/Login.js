@@ -42,7 +42,11 @@ class Login extends Component {
     if(time === 1) {
       clearInterval(this.interval)
       this.resetForm()
-      this.props.history.push('/posts/user')
+      if(this.props.usertype === 'user') {
+        this.props.history.push('/posts/user')
+      } else {
+        this.props.history.push('/')
+      }
     } else {
       this.setState(prevState => ({ time: prevState.time - 1}))
     }

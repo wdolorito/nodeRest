@@ -276,6 +276,7 @@ class App extends Component {
             path='/login'
             render={ (props) => <Login
                                   { ...props }
+                                  usertype={ this.state.usertype }
                                   setLog={ this.setLog }
                                   setPass={ this.setPass }
                                   setJwt={ this.setJwt }
