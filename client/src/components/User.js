@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 
 export class User extends Component {
   state = {
-    id: "",
-    email: "",
-    updatedAt: "",
-    createdAt: ""
+    id: '',
+    email: '',
+    updatedAt: '',
+    createdAt: ''
   }
 
   componentDidMount() {
@@ -18,8 +18,8 @@ export class User extends Component {
   render() {
     return (
       <React.Fragment>
-        <p className="card-text"><strong>Email: </strong>{ this.state.email }</p>
-        <p className="card-text"><strong>ID: </strong>{ this.state.id }</p>
+        <p className='card-text'><strong>Email: </strong>{ this.state.email }</p>
+        <p className='card-text'><strong>ID: </strong>{ this.state.id }</p>
       </React.Fragment>
     )
   }

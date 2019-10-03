@@ -5,12 +5,12 @@ class EditUser extends Component {
     super(props)
 
     this.state = {
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      location: "",
-      bio: "",
-      avatar: "",
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      location: '',
+      bio: '',
+      avatar: '',
     }
 
     this.baseState = this.state
@@ -42,89 +42,89 @@ class EditUser extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="container">
-          <h1 className="text-center">Edit your User details</h1>
+        <div className='container'>
+          <h1 className='text-center'>Edit your User details</h1>
 
-          <div className="row">
-            <div className="col-md-3">
+          <div className='row'>
+            <div className='col-md-3'>
             </div>
-            <div className="col-md-6">
+            <div className='col-md-6'>
               <form onSubmit={ this.submitHandler }>
-                <div className="form-row">
-                  <div className="form-group col-md-4">
+                <div className='form-row'>
+                  <div className='form-group col-md-4'>
                     <input
-                      type="text"
-                      className="form-control"
-                      id="firstNameInput"
-                      name="firstName"
+                      type='text'
+                      className='form-control'
+                      id='firstNameInput'
+                      name='firstName'
                       value={ this.state.firstName }
                       onChange={ this.handleInput }
-                      placeholder="First Name" />
+                      placeholder='First Name' />
                   </div>
-                  <div className="form-group col-md-4">
-                    <input type="text" className="form-control"
-                    id="middleNameInput"
-                    name="middleName"
+                  <div className='form-group col-md-4'>
+                    <input type='text' className='form-control'
+                    id='middleNameInput'
+                    name='middleName'
                     value={ this.state.middleName }
                     onChange={ this.handleInput }
-                    placeholder="Middle Name" />
+                    placeholder='Middle Name' />
                   </div>
-                  <div className="form-group col-md-4">
+                  <div className='form-group col-md-4'>
                     <input
-                      type="text"
-                      className="form-control"
-                      id="lastNameInput"
-                      name="lastName"
+                      type='text'
+                      className='form-control'
+                      id='lastNameInput'
+                      name='lastName'
                       value={ this.state.lastName }
                       onChange={ this.handleInput }
-                      placeholder="Last Name" />
+                      placeholder='Last Name' />
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group col-md-12">
+                <div className='form-row'>
+                  <div className='form-group col-md-12'>
                     <input
-                      type="text"
-                      className="form-control"
-                      id="locationInput"
-                      name="location"
+                      type='text'
+                      className='form-control'
+                      id='locationInput'
+                      name='location'
                       value={ this.state.location }
                       onChange={ this.handleInput }
-                      placeholder="Where are you?" />
+                      placeholder='Where are you?' />
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group col-md-12">
+                <div className='form-row'>
+                  <div className='form-group col-md-12'>
                     <textarea
-                      rows="4"
-                      className="form-control"
-                      id="bioInput"
-                      name="bio"
+                      rows='4'
+                      className='form-control'
+                      id='bioInput'
+                      name='bio'
                       value={ this.state.bio }
                       onChange={ this.handleInput }
-                      placeholder="Share some details about yourself">
+                      placeholder='Share some details about yourself'>
                     </textarea>
                   </div>
                 </div>
 
-                <div className="form-row">
-                  <div className="form-group col-md-12">
+                <div className='form-row'>
+                  <div className='form-group col-md-12'>
                     <input
-                      type="text"
-                      className="form-control"
-                      id="avatarInput"
-                      name="avatar"
+                      type='text'
+                      className='form-control'
+                      id='avatarInput'
+                      name='avatar'
                       value={ this.state.avatar }
                       onChange={ this.handleInput }
-                      placeholder="Link to your avatar" />
+                      placeholder='Link to your avatar' />
                   </div>
                 </div>
 
-                <button type="submit" className="btn btn-primary mb-2">Update</button>
+                <button type='submit' className='btn btn-primary mb-2'>Update</button>
               </form>
             </div>
-            <div className="col-md-3">
+            <div className='col-md-3'>
             </div>
           </div>
         </div>

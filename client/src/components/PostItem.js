@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 
 export class PostItem extends Component {
   state = {
-    id: "",
-    author: "",
-    handle: "",
-    title: "",
-    body: "",
-    updatedAt: "",
-    createdAt: ""
+    id: '',
+    author: '',
+    handle: '',
+    title: '',
+    body: '',
+    updatedAt: '',
+    createdAt: ''
   }
 
   componentDidMount() {

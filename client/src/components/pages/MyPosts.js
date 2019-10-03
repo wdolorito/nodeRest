@@ -24,14 +24,14 @@ class MyPosts extends Component {
 
       return(
         <React.Fragment>
-          <h1 className="text-center">Please log in...</h1>
+          <h1 className='text-center'>Please log in...</h1>
         </React.Fragment>
       )
     }
 
     return(
       <React.Fragment>
-        <h1 className="text-center">Looking up your posts...</h1>
+        <h1 className='text-center'>Looking up your posts...</h1>
       </React.Fragment>
     )
   }

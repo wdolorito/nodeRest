@@ -46,9 +46,9 @@ class Logout extends Component {
 
       return (
         <React.Fragment>
-          <div className="container">
-            <h1 className="text-center">Logging out now...</h1>
-            <h5 className="text-center">Going to homepage in { this.state.time } seconds</h5>
+          <div className='container'>
+            <h1 className='text-center'>Logging out now...</h1>
+            <h5 className='text-center'>Going to homepage in { this.state.time } seconds</h5>
           </div>
         </React.Fragment>
       )
@@ -56,18 +56,18 @@ class Logout extends Component {
 
     return (
       <React.Fragment>
-        <div className="container">
-          <h1 className="text-center">Logout of the site</h1>
+        <div className='container'>
+          <h1 className='text-center'>Logout of the site</h1>
 
-          <div className="row">
-            <div className="col-md-2">
+          <div className='row'>
+            <div className='col-md-2'>
             </div>
-            <div className="col-md-8 text-center">
+            <div className='col-md-8 text-center'>
               <form onSubmit={ this.submitHandler }>
-                <button type="submit" className="btn btn-primary mb-2">Sign Out</button>
+                <button type='submit' className='btn btn-primary mb-2'>Sign Out</button>
               </form>
             </div>
-            <div className="col-md-2">
+            <div className='col-md-2'>
             </div>
           </div>
         </div>

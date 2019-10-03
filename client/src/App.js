@@ -170,6 +170,7 @@ class App extends Component {
       },
       (err) => {
         console.log(err)
+        this.props.history.push('/login')
       }
     )
   }
