@@ -12,6 +12,8 @@ class MyPosts extends Component {
         <React.Fragment>
           <Posts
             posts={ this.props.userposts }
+            setPost={ this.props.setPost }
+            usertype={ this.props.usertype }
           />
         </React.Fragment>
       )

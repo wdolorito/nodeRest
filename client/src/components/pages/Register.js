@@ -8,7 +8,7 @@ class Register extends Component {
     this.interval = null
 
     this.state = {
-      reglink: 'https://d0odtech.sytes.net/blog/register',
+      reglink: 'http://localhost:5000/register',
       handle: '',
       firstName: '',
       middleName: '',

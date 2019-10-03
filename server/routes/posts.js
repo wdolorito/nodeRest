@@ -94,7 +94,7 @@ module.exports = server => {
   server.get('/posts', async (req, res, next) => {
     try {
       const tosend = []
-      const posts = await Post.find().select('-_id -__v')
+      const posts = await Post.find().select('-__v')
       for(count = 0; count < posts.length; count++) {
         const post = await fixPost(posts[count])
         tosend.push(post)
@@ -124,7 +124,7 @@ module.exports = server => {
       const posts = await Post.find({ owner: user }).select('-__v')
       for(count = 0; count < posts.length; count++) {
         const post = {}
-        post._id = posts[count]._id
+        post.id = posts[count]._id
         post.author = author.author
         post.handle = author.handle
         post.title = posts[count].title

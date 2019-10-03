@@ -11,11 +11,10 @@ import EditPost from './components/pages/EditPost'
 import EditUser from './components/pages/EditUser'
 import Login from './components/pages/Login'
 import Logout from './components/pages/Logout'
+import MainPage from './components/pages/MainPage'
 import MyPosts from './components/pages/MyPosts'
 import Register from './components/pages/Register'
 import UserLookup from './components/pages/UserLookup'
-
-import Posts from './components/Posts'
 
 const CancelToken = axios.CancelToken
 
@@ -26,11 +25,11 @@ class App extends Component {
     this.cancel = null
 
     this.state = {
-      postslink: 'https://d0odtech.sytes.net/blog/posts',
-      loginlink: 'https://d0odtech.sytes.net/blog/login',
-      logoutlink: 'https://d0odtech.sytes.net/blog/logout',
-      userpostslink: 'https://d0odtech.sytes.net/blog/posts/byUser',
-      userslink: 'https://d0odtech.sytes.net/blog/users',
+      postslink: 'http://localhost:5000/posts',
+      loginlink: 'http://localhost:5000/login',
+      logoutlink: 'http://localhost:5000/logout',
+      userpostslink: 'http://localhost:5000/posts/byUser',
+      userslink: 'http://localhost:5000/users',
       dispname: 'User',
       dispflag: false,
       log: 'User',
@@ -44,7 +43,8 @@ class App extends Component {
       userstate: [],
       usertype: 'user',
       users: [],
-      lookupusers: false
+      lookupusers: false,
+      currentpost: {}
     }
   }
 
@@ -165,6 +165,8 @@ class App extends Component {
         this.resetLog()
         this.resetPass()
         this.setState({ userposts: [] })
+        this.setState({ userstate: [] })
+        this.setState({ usertype: 'user' })
         this.setState({ dispname: 'User' })
         this.resetJwt()
       },
@@ -250,6 +252,15 @@ class App extends Component {
     )
   }
 
+  setPost = (post) => {
+    this.resetPost()
+    this.setState({ currentpost: post })
+  }
+
+  resetPost = () => {
+    this.setState({ currentpost: {} })
+  }
+
   render() {
     return (
       <Router>
@@ -260,17 +271,21 @@ class App extends Component {
             usertype={ this.state.usertype } />
           <Route
             exact path='/'
-            render={ (props) => (
-              <React.Fragment>
-                <Posts
-                  posts={ this.state.posts }
-                />
-              </React.Fragment>
-            )}
+            render={ (props) => <MainPage
+                                  { ...props }
+                                  posts={ this.state.posts }
+                                  setPost={ this.setPost }
+                                  usertype={ this.state.usertype } /> }
           />
           <Route path='/about' component={ About } />
-          <Route path='/post/edit' component={ EditPost } />
-          <Route path='/user/edit'
+          <Route
+            path='/post/edit'
+            render={ (props) => <EditPost
+                                  { ...props }
+                                  post={ this.state.currentpost } /> }
+          />
+          <Route
+            path='/user/edit'
             render={ (props) => <EditUser
                                   { ...props }
                                   updateUser={ this.updateUser } /> }
@@ -295,9 +310,11 @@ class App extends Component {
             path='/posts/user'
             render={ (props) => <MyPosts
                                   { ...props }
+                                  setPost={ this.setPost }
                                   userposts={ this.state.userposts }
                                   userpostsavail={ this.state.userpostsavail }
                                   setUserpostsflag={ this.setUserpostsflag }
+                                  usertype={ this.state.usertype }
                                   user={ this.state.log } /> }
           />
           <Route path='/register' component={ Register } />
