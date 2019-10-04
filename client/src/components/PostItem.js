@@ -47,12 +47,25 @@ export class PostItem extends Component {
     if(!(this.props.usertype === 'user' && this.props.page === 'main')) {
       postid = <button type='button' onClick={ this.handleClick } id={ this.state.id } className='btn btn-info'>edit</button>
     }
+
+    let created, updated
+    if(this.state.createdAt) {
+      created = new Date(this.state.createdAt)
+      created = created.toLocaleString("en-US")
+    }
+
+    if(this.state.updatedAt) {
+      updated = new Date(this.state.updatedAt)
+      updated = updated.toLocaleString("en-US")
+    }
+
     return (
       <div className='card'>
         <div className='card-body'>
           <h5 className='card-title'>{ this.state.title }</h5>
-          <h6 className='card-subtitle text-muted'>{ this.state.author }</h6>
-          <div className='card-text' dangerouslySetInnerHTML={{ __html: this.state.body }} />
+          <h6 className='card-subtitle text-muted'>by { this.state.author } on { created }</h6>
+          <h6 className='card-subtitle text-muted mt-1 font-italic'>last updated { updated }</h6>
+          <div className='card-text mt-2' dangerouslySetInnerHTML={{ __html: this.state.body }} />
           { postid }
         </div>
       </div>

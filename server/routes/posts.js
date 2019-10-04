@@ -229,7 +229,7 @@ module.exports = server => {
 
     if(canaction) {
       try {
-        await Post.updateOne({ _id: post._id}, { $set: req.body }).select('-__v')
+        await Post.findOneAndUpdate({ _id: post._id}, { $set: req.body }).select('-__v')
         res.send(200, 'updated post')
         next()
       } catch(err) {
