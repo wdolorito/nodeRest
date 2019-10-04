@@ -17,13 +17,6 @@ export class PostItem extends Component {
     }
   }
 
-  handleClick = (e) => {
-    e.preventDefault()
-
-    this.props.setPost(this.props.post)
-    this.setState({ toEdit: true })
-  }
-
   componentDidMount() {
     this.setState({ id: this.props.post.id })
     this.setState({ author: this.props.post.author })
@@ -36,6 +29,13 @@ export class PostItem extends Component {
 
   componentWillUnmount() {
     this.setState({ toEdit: false })
+  }
+
+  handleClick = (e) => {
+    e.preventDefault()
+
+    this.props.setPost(this.props.post)
+    this.setState({ toEdit: true })
   }
 
   render() {

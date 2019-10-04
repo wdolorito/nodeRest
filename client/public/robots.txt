@@ -4,3 +4,5 @@ Disallow: /login/
 Noindex: /login/
 Disallow: /logout/
 Noindex: /logout/
+Disallow: /post/edit/
+Noindex: /post/edit/

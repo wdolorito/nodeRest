@@ -1,65 +1,71 @@
 import React, { Component } from 'react'
-import tinymce from 'tinymce'
-import 'tinymce/themes/silver/theme'
-import 'tinymce/plugins/wordcount'
-import 'tinymce/plugins/table'
+import { Editor } from '@tinymce/tinymce-react'
 
 class EditPost extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-                   title: null,
-                   body: null
+                   apiKey: 'j1bk4ddwcsvs9voch35lmgsnwvbnlhy21605dto1ktt6gy2c',
+                   post_body: '',
+                   post_title: ''
                  }
   }
+
   componentDidMount() {
-    console.log(this.props.post)
-
-    tinymce.init({
-      selector: '#title',
-      theme: false,
-      plugins: 'wordcount table',
-      setup: editor => {
-        this.setState({ editor })
-        editor.on('keyup change', () => {
-          console.log(editor.getContent())
-        })
-      }
-    })
-
-    tinymce.init({
-      selector: '#body',
-      theme: false,
-      plugins: 'wordcount table',
-      setup: editor => {
-        this.setState({ editor })
-        editor.on('keyup change', () => {
-          console.log(editor.getContent())
-        })
-      }
-    })
   }
 
   componentWillUnmount() {
-    tinymce.remove(this.state.title)
-    tinymce.remove(this.state.body)
+  }
+
+  componentDidUpdate() {
+  }
+
+  handleEditorChange = (e) => {
+    this.setState({ [e.target.id]: e.target.getContent()})
+  }
+
+  handleClick = (e) => {
+    e.preventDefault()
+
+    console.log(this.state.post_title)
+    console.log(this.state.post_body)
   }
 
   render() {
     return (
       <React.Fragment>
         <h1>Edit Post</h1>
-        <textarea
-          id='title'
-          value={ this.props.post.title }
-          onChange={e => console.log(e)}
+        <Editor
+          apiKey={ this.state.apiKey }
+          id='post_title'
+          initialValue={ this.props.post.title }
+          init={{
+            height: 100,
+            menubar: false,
+            toolbar: false
+          }}
+          onChange={ this.handleEditorChange }
         />
-        <textarea
-          id='body'
-          value={ this.props.post.body }
-          onChange={e => console.log(e)}
+        <Editor
+          apiKey={ this.state.apiKey }
+          id='post_body'
+          initialValue={ this.props.post.body }
+          init={{
+            menubar: false,
+            plugins: [
+              'advlist autolink lists link image charmap print preview anchor',
+              'searchreplace visualblocks code fullscreen',
+              'insertdatetime media table paste code help wordcount'
+            ],
+            toolbar:
+              'undo redo | formatselect | bold italic backcolor | \
+              alignleft aligncenter alignright alignjustify | \
+              bullist numlist outdent indent | removeformat | help'
+          }}
+          onChange={ this.handleEditorChange }
         />
+        <button onClick={ this.handleClick } className='btn btn-primary mb-2'>Save</button>
       </React.Fragment>
     )
   }
