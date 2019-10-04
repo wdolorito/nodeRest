@@ -1,24 +1,46 @@
 import React, { Component } from 'react'
 import { Editor } from '@tinymce/tinymce-react'
 
+import axios from 'axios'
+
+const CancelToken = axios.CancelToken
+
 class EditPost extends Component {
   constructor(props) {
     super(props)
 
+    this.cancel = null
+    this.interval = null
+
     this.state = {
                    apiKey: 'j1bk4ddwcsvs9voch35lmgsnwvbnlhy21605dto1ktt6gy2c',
+                   updatelink: 'http://localhost:5000/post/',
                    post_body: '',
-                   post_title: ''
+                   update: false,
+                   time: 5,
+                   jwt: ''
                  }
   }
 
   componentDidMount() {
+    if(this.props.jwt) this.setState({ jwt: this.props.jwt })
+    if(this.props.post.body) this.setState({ post_body: this.props.post.body })
+    if(this.props.post.id) {
+      const fulllink = this.state.updatelink + this.props.post.id
+      this.setState({ updatelink: fulllink})
+    }
   }
 
   componentWillUnmount() {
+    if(this.cancel !== null) this.cancel()
+    clearInterval(this.interval)
+    this.setState({ update: false })
   }
 
   componentDidUpdate() {
+    console.log(this.state.jwt)
+    console.log(this.props.post.id)
+    console.log(this.state.updatelink)
   }
 
   handleEditorChange = (e) => {
@@ -28,25 +50,66 @@ class EditPost extends Component {
   handleClick = (e) => {
     e.preventDefault()
 
-    console.log(this.state.post_title)
-    console.log(this.state.post_body)
+    this.setState({ update: true })
+
+    this.updatePost()
+  }
+
+  updatePost = () => {
+    axios({
+      method: 'put',
+      url: this.state.updatelink,
+      cancelToken: new CancelToken(c => this.cancel = c ),
+      headers: {
+        'Authorization': 'Bearer ' + this.state.jwt
+      },
+      data: {
+        body: this.state.post_body
+      }
+    })
+    .then(
+      (res) => {
+        if(res.status !== 200) clearInterval(this.interval)
+      },
+      (err) => {
+        clearInterval(this.interval)
+        this.setState({ update: false })
+        console.log(err)
+      }
+    )
+  }
+
+  countDown = () => {
+    const time = this.state.time
+
+    if(time === 1) {
+      this.props.history.goBack()
+    } else {
+      this.setState(prevState => ({ time: prevState.time - 1}))
+    }
   }
 
   render() {
+    if(this.state.update) {
+      if(this.interval === null) this.interval = setInterval(this.countDown, 1000)
+
+      return (
+        <React.Fragment>
+          <div className='container'>
+            <h1 className='text-center'>Updating post</h1>
+            <h5 className='text-center'>Redirecting in { this.state.time } seconds</h5>
+          </div>
+        </React.Fragment>
+      )
+    }
+
     return (
       <React.Fragment>
         <h1>Edit Post</h1>
-        <Editor
-          apiKey={ this.state.apiKey }
-          id='post_title'
-          initialValue={ this.props.post.title }
-          init={{
-            height: 100,
-            menubar: false,
-            toolbar: false
-          }}
-          onChange={ this.handleEditorChange }
-        />
+
+        <h3>{ this.props.post.title }</h3>
+
+        <h6>Body</h6>
         <Editor
           apiKey={ this.state.apiKey }
           id='post_body'
@@ -58,10 +121,8 @@ class EditPost extends Component {
               'searchreplace visualblocks code fullscreen',
               'insertdatetime media table paste code help wordcount'
             ],
-            toolbar:
-              'undo redo | formatselect | bold italic backcolor | \
-              alignleft aligncenter alignright alignjustify | \
-              bullist numlist outdent indent | removeformat | help'
+            toolbar: true,
+            statusbar: false
           }}
           onChange={ this.handleEditorChange }
         />

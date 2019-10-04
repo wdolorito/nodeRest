@@ -89,7 +89,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    this.cancel()
+    if(this.cancel !== null) this.cancel()
   }
 
   setLog = (newlog) => {
@@ -282,7 +282,8 @@ class App extends Component {
             path='/post/edit'
             render={ (props) => <EditPost
                                   { ...props }
-                                  post={ this.state.currentpost } /> }
+                                  post={ this.state.currentpost }
+                                  jwt={ this.state.jwt } /> }
           />
           <Route
             path='/user/edit'

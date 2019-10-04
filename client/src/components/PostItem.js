@@ -52,7 +52,7 @@ export class PostItem extends Component {
         <div className='card-body'>
           <h5 className='card-title'>{ this.state.title }</h5>
           <h6 className='card-subtitle text-muted'>{ this.state.author }</h6>
-          <p className='card-text'>{ this.state.body }</p>
+          <div className='card-text' dangerouslySetInnerHTML={{ __html: this.state.body }} />
           { postid }
         </div>
       </div>

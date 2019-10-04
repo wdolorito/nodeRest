@@ -216,10 +216,11 @@ module.exports = server => {
     }
 
     let canaction
+    let post
 
     try {
       const user = await utils.getID(resToken)
-      const post = await Post.findOne({ _id: req.params.id })
+      post = await Post.findOne({ _id: req.params.id })
       const towork = post.owner
       canaction = await bauth.canAction(user, towork, 'update', 'post')
     } catch(err) {
