@@ -51,6 +51,7 @@ class EditPost extends Component {
       <React.Fragment>
         <h1>Edit Post</h1>
         <textarea
+          rows='1'
           id='title'
           value={ this.props.post.title }
           onChange={e => console.log(e)}
