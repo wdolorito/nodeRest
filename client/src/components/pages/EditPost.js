@@ -69,7 +69,12 @@ class EditPost extends Component {
     })
     .then(
       (res) => {
-        if(res.status !== 200) clearInterval(this.interval)
+        if(res.status !== 200) {
+          clearInterval(this.interval)
+        } else {
+          this.props.refresh()
+        }
+
       },
       (err) => {
         clearInterval(this.interval)
@@ -83,7 +88,7 @@ class EditPost extends Component {
     const time = this.state.time
 
     if(time === 1) {
-      this.props.history.goBack()
+      this.props.history.push('/')
     } else {
       this.setState(prevState => ({ time: prevState.time - 1}))
     }
@@ -121,7 +126,7 @@ class EditPost extends Component {
           }}
           onChange={ this.handleEditorChange }
         />
-        <button onClick={ this.handleClick } className='btn btn-primary mt-2'>Save</button>
+        <button onClick={ this.handleClick } className='btn btn-primary mt-2 mb-2'>Save</button>
       </React.Fragment>
     )
   }

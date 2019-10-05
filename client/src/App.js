@@ -54,8 +54,7 @@ class App extends Component {
       this.setJwt(localStorage.getItem('jwt'))
     }
 
-    axios.get(this.state.postslink)
-     .then((res) => this.setState({ posts: res.data }))
+    this.getPosts()
   }
 
   componentDidUpdate() {
@@ -91,6 +90,19 @@ class App extends Component {
 
   componentWillUnmount() {
     if(this.cancel !== null) this.cancel()
+  }
+
+  getPosts = () => {
+    axios.get(this.state.postslink)
+     .then((res) => this.setState({ posts: res.data }))
+  }
+
+  refreshPosts = () => {
+    if(this.state.usertype === 'user' && this.state.log !== 'User') {
+      this.getUserPosts()
+    }
+
+    this.getPosts()
   }
 
   setLog = (newlog) => {
@@ -284,13 +296,15 @@ class App extends Component {
             render={ (props) => <EditPost
                                   { ...props }
                                   post={ this.state.currentpost }
-                                  jwt={ this.state.jwt } /> }
+                                  jwt={ this.state.jwt }
+                                  refresh={ this.refreshPosts } /> }
           />
           <Route
             path='/add'
             render={ (props) => <AddPost
                                   { ...props }
-                                  jwt={ this.state.jwt } /> }
+                                  jwt={ this.state.jwt }
+                                  refresh={ this.refreshPosts } /> }
           />
           <Route
             path='/user/edit'
