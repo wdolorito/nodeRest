@@ -5,7 +5,7 @@ import axios from 'axios'
 
 const CancelToken = axios.CancelToken
 
-class EditPost extends Component {
+class AddPost extends Component {
   constructor(props) {
     super(props)
 
@@ -14,9 +14,10 @@ class EditPost extends Component {
 
     this.state = {
                    apiKey: 'j1bk4ddwcsvs9voch35lmgsnwvbnlhy21605dto1ktt6gy2c',
-                   updatelink: 'http://localhost:5000/post/',
+                   postlink: 'http://localhost:5000/post/',
+                   post_title: '',
                    post_body: '',
-                   update: false,
+                   posting: false,
                    time: 5,
                    jwt: ''
                  }
@@ -24,23 +25,19 @@ class EditPost extends Component {
 
   componentDidMount() {
     if(this.props.jwt) this.setState({ jwt: this.props.jwt })
-    if(this.props.post.body) this.setState({ post_body: this.props.post.body })
-    if(this.props.post.id) {
-      const fulllink = this.state.updatelink + this.props.post.id
-      this.setState({ updatelink: fulllink})
-    }
   }
 
   componentWillUnmount() {
     if(this.cancel !== null) this.cancel()
     clearInterval(this.interval)
-    this.setState({ update: false })
+    this.setState({ posting: false })
   }
 
   componentDidUpdate() {
     console.log(this.state.jwt)
-    console.log(this.props.post.id)
-    console.log(this.state.updatelink)
+    console.log(this.state.post_title)
+    console.log(this.state.post_body)
+    console.log(this.state.postlink)
   }
 
   handleEditorChange = (e) => {
@@ -50,30 +47,31 @@ class EditPost extends Component {
   handleClick = (e) => {
     e.preventDefault()
 
-    this.setState({ update: true })
+    this.setState({ posting: true })
 
-    this.updatePost()
+    this.createPost()
   }
 
-  updatePost = () => {
+  createPost = () => {
     axios({
-      method: 'put',
-      url: this.state.updatelink,
+      method: 'post',
+      url: this.state.postlink,
       cancelToken: new CancelToken(c => this.cancel = c ),
       headers: {
         'Authorization': 'Bearer ' + this.state.jwt
       },
       data: {
+        title: this.state.post_title,
         body: this.state.post_body
       }
     })
     .then(
       (res) => {
-        if(res.status !== 200) clearInterval(this.interval)
+        if(res.status !== 201) clearInterval(this.interval)
       },
       (err) => {
         clearInterval(this.interval)
-        this.setState({ update: false })
+        this.setState({ posting: false })
         console.log(err)
       }
     )
@@ -90,13 +88,13 @@ class EditPost extends Component {
   }
 
   render() {
-    if(this.state.update) {
+    if(this.state.posting) {
       if(this.interval === null) this.interval = setInterval(this.countDown, 1000)
 
       return (
         <React.Fragment>
           <div className='container'>
-            <h1 className='text-center'>Updating post</h1>
+            <h1 className='text-center'>Creating post</h1>
             <h5 className='text-center'>Redirecting in { this.state.time } seconds</h5>
           </div>
         </React.Fragment>
@@ -105,15 +103,29 @@ class EditPost extends Component {
 
     return (
       <React.Fragment>
-        <h1>Edit Post</h1>
+        <h1>Create Post</h1>
 
-        <h3>{ this.props.post.title }</h3>
+        <h6 className='mt-2'>Title</h6>
+        <Editor
+          apiKey={ this.state.apiKey }
+          id='post_title'
+          initialValue=''
+          init={{
+            menubar: false,
+            toolbar: false,
+            statusbar: false,
+            forced_root_block : '',
+            height: 60
+          }}
+          onChange={ this.handleEditorChange }
+        />
+
 
         <h6 className='mt-2'>Body</h6>
         <Editor
           apiKey={ this.state.apiKey }
           id='post_body'
-          initialValue={ this.props.post.body }
+          initialValue=''
           init={{
             menubar: false,
             toolbar: true,
@@ -127,4 +139,4 @@ class EditPost extends Component {
   }
 }
 
-export default EditPost
+export default AddPost

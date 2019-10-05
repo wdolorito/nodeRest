@@ -6,6 +6,7 @@ class Header extends Component {
     let login = '',
         logout = '',
         myposts = '',
+        addpost = '',
         users = '',
         register = ''
 
@@ -35,6 +36,10 @@ class Header extends Component {
     }
 
     if(this.props.user !== 'User' && this.props.usertype === 'user') {
+      addpost  = <li className='nav-item'>
+                   <Link to='/add' className='nav-link'>Create New Post</Link>
+                 </li>
+
       myposts = <li className='nav-item'>
                   <Link to='/posts/user' className='nav-link'>My Posts</Link>
                 </li>
@@ -57,6 +62,7 @@ class Header extends Component {
             { login }
             { logout }
             { myposts }
+            { addpost }
             { users }
             { register }
           </ul>
