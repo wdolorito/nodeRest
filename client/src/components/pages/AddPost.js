@@ -14,7 +14,7 @@ class AddPost extends Component {
 
     this.state = {
                    apiKey: 'j1bk4ddwcsvs9voch35lmgsnwvbnlhy21605dto1ktt6gy2c',
-                   postlink: 'http://localhost:5000/post/',
+                   postlink: 'http://localhost:5000/post',
                    post_title: '',
                    post_body: '',
                    posting: false,
