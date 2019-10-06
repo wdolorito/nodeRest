@@ -37,7 +37,7 @@ class Header extends Component {
 
     if(this.props.user !== 'User' && this.props.usertype === 'user') {
       addpost  = <li className='nav-item'>
-                   <Link to='/add' className='nav-link'>Create New Post</Link>
+                   <Link to='/posts/add' className='nav-link'>Create New Post</Link>
                  </li>
 
       myposts = <li className='nav-item'>

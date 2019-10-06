@@ -6,8 +6,10 @@ Disallow: /logout/
 Noindex: /logout/
 Disallow: /post/edit/
 Noindex: /post/edit/
-Disallow: /add/
-Noindex: /add/
+Disallow: /posts/add/
+Noindex: /posts/add/
+Disallow: /post/delete/
+Noindex: /post/delete/
 Disallow: /register/
 Noindex: /register/
 Disallow: /posts/user/

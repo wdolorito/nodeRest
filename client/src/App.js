@@ -8,6 +8,7 @@ import Footer from './components/layout/Footer'
 
 import About from './components/pages/About'
 import AddPost from './components/pages/AddPost'
+import DeletePost from './components/pages/DeletePost'
 import EditPost from './components/pages/EditPost'
 import EditUser from './components/pages/EditUser'
 import Login from './components/pages/Login'
@@ -292,17 +293,25 @@ class App extends Component {
           />
           <Route path='/about' component={ About } />
           <Route
-            path='/post/edit'
-            render={ (props) => <EditPost
+            path='/posts/add'
+            render={ (props) => <AddPost
+                                  { ...props }
+                                  jwt={ this.state.jwt }
+                                  refresh={ this.refreshPosts } /> }
+          />
+          <Route
+            exact path='/post/delete'
+            render={ (props) => <DeletePost
                                   { ...props }
                                   post={ this.state.currentpost }
                                   jwt={ this.state.jwt }
                                   refresh={ this.refreshPosts } /> }
           />
           <Route
-            path='/add'
-            render={ (props) => <AddPost
+            exact path='/post/edit'
+            render={ (props) => <EditPost
                                   { ...props }
+                                  post={ this.state.currentpost }
                                   jwt={ this.state.jwt }
                                   refresh={ this.refreshPosts } /> }
           />

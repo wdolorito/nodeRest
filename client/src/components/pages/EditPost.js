@@ -38,9 +38,6 @@ class EditPost extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this.state.jwt)
-    console.log(this.props.post.id)
-    console.log(this.state.updatelink)
   }
 
   handleEditorChange = (e) => {
@@ -69,10 +66,11 @@ class EditPost extends Component {
     })
     .then(
       (res) => {
-        if(res.status !== 200) {
-          clearInterval(this.interval)
-        } else {
+        if(res.status === 200) {
           this.props.refresh()
+        } else {
+          clearInterval(this.interval)
+          this.setState({ update: false })
         }
 
       },

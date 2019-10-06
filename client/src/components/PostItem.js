@@ -13,7 +13,8 @@ export class PostItem extends Component {
       body: '',
       updatedAt: '',
       createdAt: '',
-      toEdit: false
+      toEdit: false,
+      toDelete: false
     }
   }
 
@@ -29,13 +30,24 @@ export class PostItem extends Component {
 
   componentWillUnmount() {
     this.setState({ toEdit: false })
+    this.setState({ toDelete: false })
   }
 
   handleClick = (e) => {
     e.preventDefault()
 
     this.props.setPost(this.props.post)
-    this.setState({ toEdit: true })
+
+    switch(e.target.id) {
+      case 'edit':
+        this.setState({ toEdit: true })
+        break
+      case 'delete':
+        this.setState({ toDelete: true })
+        break
+      default:
+        console.log('something else')
+    }
   }
 
   render() {
@@ -43,9 +55,15 @@ export class PostItem extends Component {
       return <Redirect to='/post/edit' />
     }
 
-    let postid = ''
+    if(this.state.toDelete === true) {
+      return <Redirect to='/post/delete' />
+    }
+
+    let postid = '',
+        postdel = ''
     if(!(this.props.usertype === 'user' && this.props.page === 'main')) {
-      postid = <button type='button' onClick={ this.handleClick } id={ this.state.id } className='btn btn-info'>edit</button>
+      postid = <button type='button' onClick={ this.handleClick } id='edit' className='btn btn-warning'>edit</button>
+      postdel = <button type='button' onClick={ this.handleClick } id='delete' className='btn btn-danger'>delete</button>
     }
 
     let created, updated
@@ -66,7 +84,7 @@ export class PostItem extends Component {
           <h6 className='card-subtitle text-muted'>by { this.state.author } on { created }</h6>
           <h6 className='card-subtitle text-muted mt-1 font-italic'>last updated { updated }</h6>
           <div className='card-text mt-2' dangerouslySetInnerHTML={{ __html: this.state.body }} />
-          { postid }
+          { postid } { postdel }
         </div>
       </div>
     )
