@@ -95,7 +95,7 @@ module.exports = server => {
         avatar
       })
       await userData.save()
-      res.send(201)
+      res.send(201, 'registered')
       next()
     } catch(err) {
       await User.deleteOne({ _id: user._id})

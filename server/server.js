@@ -9,7 +9,7 @@ const server = restify.createServer()
 
 server.use(restify.plugins.bodyParser())
 
-const unprotected = [ '/login', '/posts', '/register' ]
+const unprotected = [ '/login', '/posts', '/register', '/ends' ]
 server.use(rjwt({ secret: process.env.APP_SECRET }).unless({ path: unprotected }))
 
 const cors = corsMiddleware({
@@ -39,6 +39,7 @@ const db = mongoose.connection
 db.on('error', err => console.log(err))
 
 db.once('open', () => {
+  require('./routes/endpoints')(server)
   require('./routes/posts')(server)
   require('./routes/users')(server)
   console.log('Listening on port: %s', port)
