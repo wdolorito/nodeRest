@@ -1,19 +1,48 @@
 import React, { Component } from 'react'
 
+import axios from 'axios'
+
+const CancelToken = axios.CancelToken
+
 class EditUser extends Component {
   constructor(props) {
     super(props)
 
+    this.cancel = null
+    this.interval = null
+
     this.state = {
+      editlink: 'http://localhost:5000/user/',
       firstName: '',
       middleName: '',
       lastName: '',
       location: '',
       bio: '',
       avatar: '',
+      update: false,
+      time: 5
     }
 
     this.baseState = this.state
+  }
+
+  componentDidMount() {
+    const user = this.props.user[0]
+    const userdata = this.props.user[1]
+
+    this.setState({ editlink: this.state.editlink + user._id})
+    this.setState({ firstName: userdata.firstName })
+    this.setState({ middleName: userdata.middleName })
+    this.setState({ lastName: userdata.lastName })
+    this.setState({ location: userdata.location })
+    this.setState({ bio: userdata.bio })
+    this.setState({ avatar: userdata.avatar })
+  }
+
+  componentWillUnmount() {
+    if(this.cancel !== null) this.cancel()
+    clearInterval(this.interval)
+    this.setState({ update: false })
   }
 
   resetForm = () => {
@@ -26,20 +55,71 @@ class EditUser extends Component {
 
   submitHandler = (e) => {
     e.preventDefault()
-    let payload = {}
 
-    if(this.state.firstName.length > 0) payload.firstName = this.state.firstName
-    if(this.state.middleName.length > 0) payload.middleName = this.state.middleName
-    if(this.state.lastName.length > 0) payload.lastName = this.state.lastName
-    if(this.state.location.length > 0) payload.location = this.state.location
-    if(this.state.bio.length > 0) payload.bio = this.state.bio
-    if(this.state.avatar.length > 0) payload.avatar = this.state.avatar
+    this.setState({ update: true })
 
-    this.props.updateUser(payload)
-    this.resetForm()
+    this.updateUser()
+  }
+
+  updateUser = () => {
+    axios({
+      method: 'put',
+      url: this.state.editlink,
+      cancelToken: new CancelToken(c => this.cancel = c ),
+      headers: {
+        'Authorization': 'Bearer ' + this.props.jwt
+      },
+      data: {
+        firstName: this.state.firstName,
+        middleName: this.state.middleName,
+        lastName: this.state.lastName,
+        location: this.state.location,
+        bio: this.state.bio,
+        avatar: this.state.avatar
+      }
+    })
+    .then(
+      (res) => {
+        if(res.status === 200) {
+          this.props.setLookup(true)
+        } else {
+          clearInterval(this.interval)
+          this.setState({ update: false })
+        }
+
+      },
+      (err) => {
+        clearInterval(this.interval)
+        this.setState({ update: false })
+        console.log(err)
+      }
+    )
+  }
+
+  countDown = () => {
+    const time = this.state.time
+
+    if(time === 1) {
+      this.props.history.push('/users')
+    } else {
+      this.setState(prevState => ({ time: prevState.time - 1}))
+    }
   }
 
   render() {
+    if(this.state.update) {
+      if(this.interval === null) this.interval = setInterval(this.countDown, 1000)
+
+      return (
+        <React.Fragment>
+          <div className='container'>
+            <h1 className='text-center'>Updating user</h1>
+            <h5 className='text-center'>Redirecting in { this.state.time } seconds</h5>
+          </div>
+        </React.Fragment>
+      )
+    }
+
     return (
       <React.Fragment>
         <div className='container'>

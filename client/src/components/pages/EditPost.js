@@ -37,9 +37,6 @@ class EditPost extends Component {
     this.setState({ update: false })
   }
 
-  componentDidUpdate() {
-  }
-
   handleEditorChange = (e) => {
     this.setState({ [e.target.id]: e.target.getContent()})
   }

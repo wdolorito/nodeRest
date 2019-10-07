@@ -207,17 +207,20 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
-    let canaction
+    let canaction = false,
+        towork = ''
 
     try {
       const user = await utils.getID(resToken)
-      const towork = req.params.id
+      towork = req.params.id
       canaction = await bauth.canAction(user, towork, 'update', 'user')
     } catch(err) {
       return next(new errors.InternalError('db error'))
     }
 
-    let pass, email
+    let pass = '',
+
+        email = ''
     if('password' in req.body) {
       try {
         pass = await hashPass(req.body.password)
@@ -250,7 +253,7 @@ module.exports = server => {
 
     if(canaction && (Object.keys(req.body).length !== 0)) {
       try {
-        await UserData.updateOne({ owner: towork }, { $set: req.body })
+        await UserData.findOneAndUpdate({ owner: towork }, { $set: req.body })
         res.send(200, 'updated user')
         next()
       } catch(err) {
@@ -271,7 +274,7 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
-    let canaction
+    let canaction = false
 
     try {
       const user = await utils.getID(resToken)

@@ -62,7 +62,8 @@ module.exports = server => {
       return next(new errors.InvalidContentError('Data not sent correctly'))
     }
 
-    let user, userType
+    let user = '',
+        userType = ''
 
     try {
       user = await utils.getID(resToken)
@@ -215,7 +216,8 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
-    let canaction = false, post = null
+    let canaction = false,
+        post = null
 
     try {
       const user = await utils.getID(resToken)
@@ -249,7 +251,8 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
-    let canaction = false, post = null
+    let canaction = false,
+        post = null
 
     try {
       const user = await utils.getID(resToken)

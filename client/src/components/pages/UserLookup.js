@@ -11,6 +11,9 @@ class UserLookup extends Component {
       <React.Fragment>
         <Users
           users={ this.props.users }
+          usertype={ this.props.usertype }
+          setUser={ this.props.setUser }
+          setLookup={ this.props.setLookup }
         />
       </React.Fragment>
     )

@@ -310,7 +310,8 @@ class App extends Component {
             render={ (props) => <EditUser
                                   { ...props }
                                   user={ this.state.currentuser }
-                                  jwt={ this.state.jwt } /> }
+                                  jwt={ this.state.jwt }
+                                  setLookup={ this.setLookup } /> }
           />
           <Route
             path='/login'
@@ -345,6 +346,8 @@ class App extends Component {
             render={ (props) => <UserLookup
                                   { ...props }
                                   users={ this.state.users }
+                                  usertype={ this.state.usertype }
+                                  setUser={ this.setUser }
                                   setLookup={ this.setLookup } /> }
           />
           <Footer />

@@ -10,6 +10,8 @@ class Users extends Component {
             <FullUser
               user={ auser[0] }
               userdata={ auser[1] }
+              usertype={ this.props.usertype }
+              setUser={ this.props.setUser }
             />
           </div>
         </div>
