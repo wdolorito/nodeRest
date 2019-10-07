@@ -36,7 +36,7 @@ class DeletePost extends Component {
   }
 
   componentDidUpdate() {
-    if(this.state.delete && this.state.deleteconfirm) this.deletePost()
+    if(this.state.delete && this.state.deleteconfirm && this.cancel === null) this.deletePost()
   }
 
   handleClick = (e) => {
@@ -119,7 +119,7 @@ class DeletePost extends Component {
 
           <div dangerouslySetInnerHTML={{ __html: this.props.post.body }} />
 
-          <button onClick={ this.handleClick } id='cancel' className='btn btn-info mt-2 mb-2'>cancel</button>
+          <button onClick={ this.handleClick } id='cancel' className='btn btn-info mt-2 mb-2 mr-2'>cancel</button>
           <button onClick={ this.handleClick } id='confirm' className='btn btn-danger mt-2 mb-2'>confirm</button>
         </React.Fragment>
       )

@@ -288,6 +288,7 @@ class App extends Component {
             render={ (props) => <MainPage
                                   { ...props }
                                   posts={ this.state.posts }
+                                  refresh={ this.refreshPosts }
                                   setPost={ this.setPost }
                                   usertype={ this.state.usertype } /> }
           />

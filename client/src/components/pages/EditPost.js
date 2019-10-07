@@ -124,7 +124,7 @@ class EditPost extends Component {
           }}
           onChange={ this.handleEditorChange }
         />
-        <button onClick={ this.handleClick } className='btn btn-primary mt-2 mb-2'>Save</button>
+        <div className='text-center'><button onClick={ this.handleClick } className='btn btn-primary mt-2 mb-2'>Save</button></div>
       </React.Fragment>
     )
   }

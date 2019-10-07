@@ -215,13 +215,12 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
-    let canaction
-    let post
+    let canaction = false, post = null
 
     try {
       const user = await utils.getID(resToken)
       post = await Post.findOne({ _id: req.params.id })
-      const towork = post.owner
+      const towork = post._doc.owner
       canaction = await bauth.canAction(user, towork, 'update', 'post')
     } catch(err) {
       return next(new errors.InternalError('db error'))
@@ -236,6 +235,8 @@ module.exports = server => {
         return next(new errors.ResourceNotFoundError('Post not found'))
       }
     }
+
+    return next(new errors.ResourceNotFoundError('Post not found'))
   })
 
   server.del('/post/:id', async (req, res, next) => { // 204 req
@@ -248,15 +249,15 @@ module.exports = server => {
       return next(new errors.InternalError('db error'))
     }
 
-    let canaction
+    let canaction = false, post = null
 
     try {
       const user = await utils.getID(resToken)
-      const post = await Post.findOne({ _id: req.params.id })
-      const towork = post.owner
+      post = await Post.findOne({ _id: req.params.id })
+      const towork = post._doc.owner
       canaction = await bauth.canAction(user, towork, 'delete', 'post')
     } catch(err) {
-      return next(new errors.InternalError('db error'))
+      return next(new errors.InternalError('db error testing'))
     }
 
     if(canaction) {
@@ -268,5 +269,7 @@ module.exports = server => {
         return next(new errors.ResourceNotFoundError('Post not found'))
       }
     }
+
+    return next(new errors.ResourceNotFoundError('Post not found'))
   })
 }
