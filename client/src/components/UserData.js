@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
 
 export class UserData extends Component {
-  state = {
-    handle: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    bio: '',
-    location: '',
-    avatar: '',
-    updatedAt: '',
-    createdAt: ''
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      handle: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      bio: '',
+      location: '',
+      avatar: '',
+      updatedAt: '',
+      createdAt: ''
+    }
   }
 
   getFullName = () => {

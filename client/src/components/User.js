@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 
 export class User extends Component {
-  state = {
-    id: '',
-    email: '',
-    updatedAt: '',
-    createdAt: ''
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      id: '',
+      email: '',
+      updatedAt: '',
+      createdAt: ''
+    }
   }
 
   componentDidMount() {

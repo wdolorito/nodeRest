@@ -46,7 +46,8 @@ class App extends Component {
       usertype: 'user',
       users: [],
       lookupusers: false,
-      currentpost: {}
+      currentpost: {},
+      currentuser: {}
     }
   }
 
@@ -218,27 +219,6 @@ class App extends Component {
     this.setState({ userpostsstart: flag })
   }
 
-  updateUser = (updated) => {
-    if(this.state.log !== 'User') {
-      axios({
-        method: 'get',
-        url: this.state.userslink,
-        cancelToken: new CancelToken(c => this.cancel = c ),
-        headers: {
-          'Authorization': 'Bearer ' + this.state.jwt
-        }
-      })
-      .then(
-        (res) => {
-          console.log(res.data)
-        },
-        (err) => {
-          console.log(err)
-        }
-      )
-    }
-  }
-
   setLookup = (lookup) => {
     this.setState({ lookupusers: lookup })
   }
@@ -273,6 +253,15 @@ class App extends Component {
 
   resetPost = () => {
     this.setState({ currentpost: {} })
+  }
+
+  setUser = (user) => {
+    this.resetUser()
+    this.setState({ currentuser: user })
+  }
+
+  resetUser = () => {
+    this.setState({ currentuser: {} })
   }
 
   render() {
@@ -320,7 +309,8 @@ class App extends Component {
             path='/user/edit'
             render={ (props) => <EditUser
                                   { ...props }
-                                  updateUser={ this.updateUser } /> }
+                                  user={ this.state.currentuser }
+                                  jwt={ this.state.jwt } /> }
           />
           <Route
             path='/login'

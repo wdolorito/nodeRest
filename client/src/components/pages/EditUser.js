@@ -121,7 +121,9 @@ class EditUser extends Component {
                   </div>
                 </div>
 
-                <button type='submit' className='btn btn-primary mb-2'>Update</button>
+                <div className='text-center'>
+                  <button type='submit' className='btn btn-primary mb-2'>update</button>
+                </div>
               </form>
             </div>
             <div className='col-md-3'>
