@@ -10,6 +10,7 @@ import About from './components/pages/About'
 import AddPost from './components/pages/AddPost'
 import DeletePost from './components/pages/DeletePost'
 import EditPost from './components/pages/EditPost'
+import DeleteUser from './components/pages/DeleteUser'
 import EditUser from './components/pages/EditUser'
 import Login from './components/pages/Login'
 import Logout from './components/pages/Logout'
@@ -304,6 +305,14 @@ class App extends Component {
                                   post={ this.state.currentpost }
                                   jwt={ this.state.jwt }
                                   refresh={ this.refreshPosts } /> }
+          />
+          <Route
+            path='/user/delete'
+            render={ (props) => <DeleteUser
+                                  { ...props }
+                                  user={ this.state.currentuser }
+                                  jwt={ this.state.jwt }
+                                  setLookup={ this.setLookup } /> }
           />
           <Route
             path='/user/edit'

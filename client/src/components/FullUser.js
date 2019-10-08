@@ -25,7 +25,7 @@ export class FullUser extends Component {
   }
 
   componentDidUpdate() {
-    if(this.state.toEdit) this.props.setUser(this.state.useredit)
+    if(this.state.toEdit || this.state.toDelete) this.props.setUser(this.state.useredit)
   }
 
   componentWillUnmount() {
@@ -52,11 +52,12 @@ export class FullUser extends Component {
     }
 
     if(this.state.toDelete === true) {
-      console.log('deleting')
+      return <Redirect to='/user/delete' />
     }
 
     let useredit = '',
         userdel = ''
+
     useredit = <button type='button' onClick={ this.handleClick } id='edit' className='btn btn-warning'>edit</button>
     userdel = <button type='button' onClick={ this.handleClick } id='delete' className='btn btn-danger'>delete</button>
 
