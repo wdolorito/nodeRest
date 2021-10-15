@@ -16,12 +16,12 @@
     "mongoose": "^5.6.11",
     "mongoose-timestamp": "^0.6.0",
     "restify": "^8.4.0",
-    "restify-cors-middleware": "^1.1.1",
+    "restify-cors-middleware2": "^2.1.2",
     "restify-errors": "^8.0.1",
     "restify-jwt-community": "^1.1.0",
     "saslprep": "^1.0.3"
   },
   "devDependencies": {
-    "nodemon": "^1.19.3"
+    "nodemon": "^2.0.13"
   }
 }
