@@ -1,5 +1,3 @@
-const errors = require('restify-errors')
-
 module.exports = server => {
   server.get('/ends', async (req, res, next) => {
 
