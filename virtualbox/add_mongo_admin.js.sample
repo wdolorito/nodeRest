@@ -1,0 +1,17 @@
+use admin
+db.createUser(
+  {
+    user: "AdminMongo",
+    pwd: "<some password>",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
+use nodeRestDB
+db.createUser(
+  {
+    user: "nodeRest",
+    pwd: "<another password",
+    roles: [ { role: "readWrite", db: "nodeRestDB" } ]
+  }
+)
