@@ -1,0 +1,16 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /login/
+Noindex: /login/
+Disallow: /logout/
+Noindex: /logout/
+Disallow: /post/edit/
+Noindex: /post/edit/
+Disallow: /posts/add/
+Noindex: /posts/add/
+Disallow: /post/delete/
+Noindex: /post/delete/
+Disallow: /register/
+Noindex: /register/
+Disallow: /posts/user/
+Noindex: /posts/user/
