@@ -11,7 +11,7 @@ use nodeRestDB
 db.createUser(
   {
     user: "nodeRest",
-    pwd: "<another password",
+    pwd: "<another password><",
     roles: [ { role: "readWrite", db: "nodeRestDB" } ]
   }
 )
